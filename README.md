@@ -1,4 +1,4 @@
-![Reddit logo](docs/reddit-logo.png?raw=true "Logo")
+![Reddit logo](extension/data/reddit-logo.png?raw=true "Logo")
 
 # reddit-news
 Simple browser extension that shows recent news from reddit written in ES6 and React.JS with Redux.

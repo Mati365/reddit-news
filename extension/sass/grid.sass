@@ -1,0 +1,15 @@
+*
+  box-sizing: border-box
+
+.row
+  display: flex
+  flex-wrap: wrap
+  clear: both
+
+//  Generate grid system
+@for $i from 1 through 12
+  .col-#{$i}
+    $size: percentage($i/12)
+
+    width: $size
+    flex-basis: $size

@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2
+, "name": "reddit-news"
+, "description": "Simple browser extension that shows recent news from reddit."
+, "version": "0.0.1"
+, "browser_action": {
+    "default_icon": "data/reddit-logo.png"
+  , "default_popup": "views/popup.html"
+  }
+, "icons": {
+    "16": "data/reddit-logo.png"
+  , "48": "data/reddit-logo.png"
+  , "128": "data/reddit-logo.png"
+  }
+, "background": {
+    "scripts": []
+  }
+, "web_accessible_resources": [
+    "views/*.html"
+  ]
+, "permissions": [
+    "<all_urls>"
+  , "tabs"
+  , "storage"
+  ]
+}
