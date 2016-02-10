@@ -4,6 +4,7 @@ var gulp = require('gulp')
   , jade = require('gulp-jade')
   , sass = require('gulp-sass')
   , concat = require('gulp-concat')
+  , gutil = require('gulp-util')
   , runSequence = require('run-sequence')
 
   , del = require('del')
@@ -34,7 +35,10 @@ gulp
   /** Compile ES6 scripts to normal */
   .task('build:js', function() {
     return browserify({
-        entries: 'extension/src/app.js'
+        entries: [
+            'extension/src/app.js'
+          , 'extension/platform/' + buildPlatform + '/src/listeners.js'
+        ]
       , extensions: ['.js']
       , debug: true
     })
@@ -42,6 +46,7 @@ gulp
         presets: ['es2015', 'react']
       })
       .bundle()
+      .on("error", gutil.log)
       .pipe(source('app.bundle.js'))
       .pipe(buffer())
       .pipe(gulpif(production, uglify()))
@@ -70,14 +75,18 @@ gulp
   /** Copy files */
   .task('copy:data', function() {
     return gulp
-      .src('extension/data/**/*', {base: 'extension/data'})
+      .src('extension/data/**/*', { base: 'extension/data' })
       .pipe(gulp.dest('build/data/'));
   })
 
   .task('copy:platform', function() {
     var base = 'extension/platform/' + buildPlatform;
     return gulp
-      .src(base + '/**/*', {base: base})
+      .src([
+          base + '/**/*'
+        , '!' + base + '/src'
+        , '!' + base + '/src/**/*'
+      ], { base: base })
       .pipe(gulp.dest('build/'));
   })
 

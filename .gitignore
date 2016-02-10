@@ -4,3 +4,4 @@
 !.gitkeep
 node_modules/
 build/
+*.log
