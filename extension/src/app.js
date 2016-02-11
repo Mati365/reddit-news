@@ -1,6 +1,6 @@
 import OAuth from './api/oauth';
 
-OAuth.authorize({
-    'client_id': 'T4iudYXC0HuLJQ'
-  , 'scope': 'identity,edit,flair'
-}, 'reddit');
+OAuth
+  .createClient('reddit', 'XRZp1Svht5HGyQ', ['identity', 'read', 'vote'])
+  .api('api/v1/me')
+  .then(d => console.log(d));

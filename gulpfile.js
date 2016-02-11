@@ -36,8 +36,8 @@ gulp
   .task('build:js', function() {
     return browserify({
         entries: [
-            'extension/src/app.js'
-          , 'extension/platform/' + buildPlatform + '/src/listeners.js'
+            'extension/platform/' + buildPlatform + '/src/actions.js'
+          , 'extension/src/app.js'
         ]
       , extensions: ['.js']
       , debug: true

@@ -13,7 +13,7 @@
   , "128": "data/reddit-logo.png"
   }
 , "background": {
-    "scripts": []
+    "scripts": ["background.js"]
   }
 , "web_accessible_resources": [
     "views/*.html"
