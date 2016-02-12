@@ -1,0 +1,22 @@
+@import 'popup'
+
+footer ul
+  position: absolute
+  bottom: 0
+  height: auto
+
+  list-style-type: none
+  margin: 0
+  padding: 0
+
+  li
+    display: inline-block
+    padding: 0 4px
+
+    a
+      @extend .no-decoration
+      color: darkgray
+      text-align: center
+      &:hover
+        font-weight: bold
+        color: black

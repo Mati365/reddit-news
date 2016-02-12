@@ -70,15 +70,14 @@ class OAuth {
    * @returns {Promise}
    */
   api(path, data={}) {
-    let request = () => {
+    let promise = null
+      , request = () => {
       return qwest.get(`${this.headers.apiServer}/${path}`, data, {
         headers: {
           'Authorization': `bearer ${this._storage('accessToken')}`
         }
       });
     };
-
-    let promise = null;
 
     // Authorize before API call
     if(!this._storage('accessToken'))

@@ -7,7 +7,10 @@ import {setBrowserAPI} from '../../../src/api/platform';
  * @returns {Promise}
  */
 function showOAuthPopup(clientId, url) {
-  chrome.extension.getBackgroundPage().clientId = clientId;
+  _.assignIn(chrome.extension.getBackgroundPage(), {
+      captureCode: true
+    , clientId
+  });
   chrome.tabs.create({
     url
   });

@@ -21,9 +21,10 @@ var buildPlatform = argv.platform || 'chrome'
 
 /** List of all paths */
 var paths = {
-    scripts: ['extension/platform/' + buildPlatform + '/**/*.js', 'extension/src/**/*.js']
+    scripts: ['extension/platform/' + buildPlatform + '/**/*', 'extension/src/**/*']
   , views: 'extension/views/**/*.jade'
   , styles: 'extension/sass/**/*.sass'
+  , platform: 'extension/platform/' + buildPlatform
 };
 
 gulp
@@ -36,8 +37,8 @@ gulp
   .task('build:js', function() {
     return browserify({
         entries: [
-            'extension/platform/' + buildPlatform + '/src/actions.js'
-          , 'extension/src/app.js'
+            paths.platform + '/src/actions.js'
+          , 'extension/src/app.jsx'
         ]
       , extensions: ['.js']
       , debug: true
@@ -80,13 +81,12 @@ gulp
   })
 
   .task('copy:platform', function() {
-    var base = 'extension/platform/' + buildPlatform;
     return gulp
       .src([
-          base + '/**/*'
-        , '!' + base + '/src'
-        , '!' + base + '/src/**/*'
-      ], { base: base })
+          paths.platform + '/**/*'
+        , '!' + paths.platform + '/src'
+        , '!' + paths.platform + '/src/**/*'
+      ], { base: paths.platform })
       .pipe(gulp.dest('build/'));
   })
 
@@ -95,6 +95,10 @@ gulp
     gulp.watch(paths.scripts, ['build:js']);
     gulp.watch(paths.views, ['build:jade']);
     gulp.watch(paths.styles, ['build:sass']);
+    gulp.watch([
+        paths.platform + '/**/*'
+      , '!' + paths.platform + '/src/**/*'
+    ], ['copy:platform'])
   })
 
   /** Build project */
