@@ -18,6 +18,9 @@ class OAuth {
     this.clientId = clientId;
     this.scope = scope.join(',');
 
+    // Set to true after doing any request
+    this._oauthRequest = false;
+
     if(!this._storage('code'))
       this.showPopup();
   }
@@ -67,19 +70,20 @@ class OAuth {
    * Create API request
    * @param path  API path
    * @param data  Form data
+   * @param type  Call type
    * @returns {Promise}
    */
-  api(path, data={}) {
+  api(path, data={}, type='get') {
     let promise = null
       , request = () => {
-      return qwest.get(`${this.headers.apiServer}/${path}`, data, {
-        headers: {
-          'Authorization': `bearer ${this._storage('accessToken')}`
-        }
-      });
-    };
+        return qwest[type](`${this.headers.apiServer}/${path}`, data, {
+          headers: {
+            'Authorization': `bearer ${this._storage('accessToken')}`
+          }
+        });
+      };
 
-    // Authorize before API call
+    // If there is no access token full auth
     if(!this._storage('accessToken'))
       promise = this._authorize().then(request);
 
@@ -87,20 +91,28 @@ class OAuth {
     else if(Date.now() >= parseInt(this._storage('expires')))
       promise = this._authorize(true).then(request);
 
-    // Parse response
+    // If success
     else
       promise = request();
 
     // parse to JSON
-    return promise.then(data => JSON.parse(data.response));
+    if(promise)
+      return promise.then(data => JSON.parse(data.response));
   }
 
   /**
-   * Authorize to server getting access code
+   * Authorize to server getting access code, if access token
+   * is not provided show authorization popup
    * @param refresh   Refresh token if true
    * @returns {Promise}
    */
   _authorize(refresh=false) {
+    if(this._oauthRequest)
+      return;
+    else
+      this._oauthRequest = true;
+
+    // Create form data
     let formData = {
         'grant_type': refresh
           ? 'refresh_token'
@@ -112,6 +124,7 @@ class OAuth {
     if(refresh)
       formData['refresh_token'] = this._storage('refreshToken');
 
+    // Getting access token if not showing Popup
     return qwest
       .post(`${this.headers.server}/api/v1/access_token`, formData, {
         headers: {
@@ -130,7 +143,8 @@ class OAuth {
             , refreshToken: refresh
               ? this._storage('refreshToken')
               : data['refresh_token']
-          });
+          })
+          ._oauthRequest = false;
       })
       .catch(error => {
         error === 'invalid_grant' && this.showPopup();

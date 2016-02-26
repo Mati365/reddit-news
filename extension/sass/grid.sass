@@ -2,9 +2,13 @@
   box-sizing: border-box
 
 .row
+  width: 100%
   display: flex
   flex-wrap: wrap
   clear: both
+
+[class*='col-']
+  float: left
 
 //  Generate grid system
 @for $i from 1 through 12

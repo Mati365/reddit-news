@@ -8,7 +8,7 @@ var captureCode = false;
  * @returns {Array}
  */
 function parseUrlParams(url) {
-  var re = /(\w*)=(\w*)(?:$|&)/g
+  var re = /(\w*)=([^&]*)(?:$|&)/g
     , getParams = {}
     , match;
 

@@ -1,14 +1,13 @@
 ![Reddit logo](extension/data/reddit-logo.png?raw=true "Logo")
 
 # reddit-news
-Simple browser extension that shows recent news from reddit written in ES6 and React.JS with Redux.
+Simple browser extension that shows recent news from reddit written in ES6 and Vua.JS
 
 ## Todos
-- [ ] download news list via reddit api
-- [ ] create react/redux frontend
+- [x] download news list via reddit api
 - [ ] port extension to firefox
 - [ ] create settings page
-- [ ] add multipe subreddits support
+- [x] add multipe subreddits support
 - [ ] commenting news support
 
 ## License

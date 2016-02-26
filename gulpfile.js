@@ -38,13 +38,13 @@ gulp
     return browserify({
         entries: [
             paths.platform + '/src/actions.js'
-          , 'extension/src/app.jsx'
+          , 'extension/src/app.js'
         ]
       , extensions: ['.js']
       , debug: true
     })
       .transform(babelify, {
-        presets: ['es2015', 'react']
+        presets: ['es2015']
       })
       .bundle()
       .on("error", gutil.log)
