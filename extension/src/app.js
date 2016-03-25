@@ -60,7 +60,7 @@ import OAuth from './api/oauth';
       fetchList() {
         client.api(`/r/${this.$route.params.name}/new`).then(data => {
           let news =  _.map(data.data.children, news => {
-            if(!news.data.thumbnail || !news.data.thumbnail.length)
+            if(!news.data.thumbnail.length || news.data.thumbnail === 'self')
               news.data.thumbnail = '../data/placeholder.png';
             return news.data;
           });
