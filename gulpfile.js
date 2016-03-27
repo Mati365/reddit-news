@@ -12,7 +12,9 @@ var gulp = require('gulp')
   , babelify = require('babelify')
 
   , source = require('vinyl-source-stream')
-  , buffer = require('vinyl-buffer');
+  , buffer = require('vinyl-buffer')
+
+  , _ = require('lodash');
 
 /** Platform from CLI param */
 var buildPlatform = argv.platform || 'chrome'
@@ -21,8 +23,8 @@ var buildPlatform = argv.platform || 'chrome'
 /** List of all paths */
 var paths = {
     scripts: [
-        'extension/platform/' + buildPlatform + '/**/*.js'
-      , 'extension/src/**/*.js'
+        'extension/platform/' + buildPlatform + '/**/*'
+      , 'extension/src/**/*'
     ]
   , views: 'extension/views/**/*.jade'
   , platform: 'extension/platform/' + buildPlatform
@@ -61,7 +63,9 @@ gulp.task('build:js', function() {
 gulp.task('lint', function () {
   var lint = plugins.eslint;
   return gulp
-    .src(paths.scripts)
+    .src(_.map(paths.scripts, function(path) {
+      return path + '.js';
+    }))
     .pipe(lint())
     .pipe(lint.format())
     .pipe(lint.failAfterError());
