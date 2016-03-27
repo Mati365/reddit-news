@@ -1,7 +1,7 @@
 ![Reddit logo](extension/data/reddit-logo.png?raw=true "Logo")
 
 # reddit-news
-Simple browser extension that shows recent news from reddit written in ES6 and Vua.JS
+Simple browser extension that shows recent news from reddit written in ES6 and Vue.JS
 
 ## Todos
 - [x] download news list via reddit api
