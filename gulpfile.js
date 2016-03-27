@@ -5,6 +5,7 @@ var gulp = require('gulp')
   // Node libs
   , del = require('del')
   , argv = require('yargs').argv
+  , path = require('path')
 
   // Transforms
   , vueify = require('vueify')
@@ -33,6 +34,16 @@ var paths = {
 /** Clean project */
 gulp.task('clean', function() {
   return del(['build']);
+});
+
+/** Copy libs data into dist folder */
+gulp.task('copy:fonts', function() {
+  var data = [
+    'font-awesome/fonts/fontawesome-webfont.ttf'
+  ];
+  return gulp
+    .src(data, {cwd: 'node_modules'})
+    .pipe(gulp.dest('build/fonts'));
 });
 
 /** Compile ES6 scripts to normal */
@@ -108,7 +119,7 @@ gulp.task('watch', function() {
 
 /** Build project */
 gulp.task('build', function(callback) {
-  runSequence('clean', 'lint', ['build:js', 'build:jade', 'copy:data', 'copy:platform'], callback);
+  runSequence('clean', 'lint', 'copy:fonts', ['build:js', 'build:jade', 'copy:data', 'copy:platform'], callback);
 });
 
 /** Default task */
