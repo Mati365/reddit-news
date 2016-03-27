@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  padding: 6px;
+}
+
+.row {
+  @extend .container;
+
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  clear: both;
+  align-items: center;
+}
+
+[class*='col-'] {
+  float: left;
+}
+
+//  Generate grid system
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    $size: percentage($i / 12);
+    width: $size;
+    flex-basis: $size;
+  }
+}
+
+.no-select { user-select: none; }
+.text-center { text-align: center; }
