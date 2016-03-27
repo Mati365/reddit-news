@@ -63,7 +63,7 @@ class OAuth {
       .showOAuthPopup(this.clientId, `${this.headers.server}/api/v1/authorize?${queryParams}`)
 
       // Save new code to storage
-      .then(code => this._storage('code', code));
+      .then((code) => this._storage('code', code));
   }
 
   /**
@@ -97,7 +97,7 @@ class OAuth {
 
     // parse to JSON
     if(promise)
-      return promise.then(data => JSON.parse(data.response));
+      return promise.then((data) => JSON.parse(data.response));
   }
 
   /**
@@ -108,7 +108,7 @@ class OAuth {
    */
   _authorize(refresh=false) {
     if(this._oauthRequest)
-      return;
+      return Promise.resolve();
     else
       this._oauthRequest = true;
 
@@ -131,7 +131,7 @@ class OAuth {
           'Authorization': `Basic ${btoa(this.clientId + ':')}`
         }
       })
-      .then(data => {
+      .then((data) => {
         data = JSON.parse(data.response);
         if(data.error)
           throw data.error;
@@ -146,7 +146,7 @@ class OAuth {
           })
           ._oauthRequest = false;
       })
-      .catch(error => {
+      .catch((error) => {
         error === 'invalid_grant' && this.showPopup();
       });
   }

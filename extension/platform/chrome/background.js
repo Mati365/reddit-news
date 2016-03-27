@@ -22,12 +22,13 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   // Check only loading page
   if(!captureCode || changeInfo.status !== 'loading')
     return;
-
+  
   // Map URL params
   var params = parseUrlParams(changeInfo.url);
   if(params.state && params.code) {
     localStorage[clientId + '_code'] = params.code;
     chrome.tabs.remove(tab.id);
+
     captureCode = false;
   }
 });

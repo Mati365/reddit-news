@@ -1,0 +1,38 @@
+{
+  "parser": "babel-eslint",
+  "plugins": [
+    "babel"
+  ],
+  "rules": {
+    "strict": 0,
+    // Babel
+    "babel/generator-star-spacing": 1,
+    "babel/new-cap": 1,
+    "babel/array-bracket-spacing": 1,
+    "babel/object-curly-spacing": 1,
+    "babel/object-shorthand": 1,
+    "babel/arrow-parens": 1,
+    "babel/no-await-in-loop": 1,
+    // ES6
+    // Possible Errors
+    "no-empty": 2,
+    "no-empty-character-class": 2,
+    "no-dupe-args": 2,
+    "no-dupe-keys": 2,
+    "no-duplicate-case": 2,
+    // Best practices
+    "block-scoped-var": 0,
+    "default-case": 2,
+    "no-alert": 2,
+    // Naming
+    "comma-style": [1, "first"],
+    "camelcase": 1,
+    // Other stuff
+    "no-array-constructor": 2,
+    "no-caller": 2,
+    "no-class-assign": 2,
+//    "no-cond-assign": 2,
+    "no-const-assign": 2,
+    "no-control-regex": 2
+  }
+}

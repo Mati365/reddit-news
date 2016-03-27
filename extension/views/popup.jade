@@ -1,22 +1,5 @@
+doctype html
 html(lang='eng')
-    head
-        link(href='../css/style.css', rel='stylesheet')
-
     body
-        script(type='text/x-template', id='subreddit-route')
-            .row.message(v-for='message in news')
-                div.col-3.thumbnail
-                    img(v-bind:src='message.thumbnail')
-
-                div.col-9.description
-                    a.no-decoration(v-bind:href='message.url')
-                        | {{ message.title }}
-
-        #app-screen
-            nav.row
-                ul
-                    li(v-for='subreddit in list', v-link-active)
-                        a(v-link='{ name: "subreddit", params: { name: subreddit }}') {{ subreddit }}
-            article.row
-                router-view
+        #vue-mount
         script(src='../js/app.bundle.js')
