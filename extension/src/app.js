@@ -18,9 +18,12 @@ import NewsView from './components/NewsView.vue';
   let router = new VueRouter;
   router
     .map({
-      '/news/:subreddit': {
+      '/news/:subreddit/:sort': {
         component: NewsView
       }
+    })
+    .alias({
+      '/news/:subreddit': '/news/:subreddit/hot'
     })
     .redirect({
       '*': '/news/programming'

@@ -4,12 +4,24 @@
       .subtitle Reddit
       strong.title /r/{{$route.params.subreddit}}
     ul.nav.listings
-      li.active hot
-      li new
-      li random
-      li top
-      li controversial
+      li(v-for="type in listings" v-link-active)
+        a.no-decoration(
+          v-link="{ path:'/news/' + $route.params.subreddit + '/' + type, params: $route.params, activeClass: 'active' }"
+        ) {{ type }}
 </template>
+
+<script>
+  import {fetchUserInfo} from '../vuex/user/actions';
+
+  export default {
+      name: 'NewsView'
+    , data() {
+      return {
+        listings: ['hot', 'new', 'random', 'top', 'controversial']
+      };
+    }
+  }
+</script>
 
 <style lang="sass">
   @import 'sass/const.scss';
@@ -26,10 +38,11 @@
       padding: 2px 4px;
       z-index: 999;
 
-    &.active {
-       background: white;
-       border-bottom: 1px solid white;
-     }
+      &.active {
+        background: white;
+        border-bottom: 1px solid white;
+        font-weight: bold;
+      }
     }
   }
 </style>
