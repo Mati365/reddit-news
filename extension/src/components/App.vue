@@ -8,8 +8,7 @@
       router-view(transition transition-mode='out-in')
 </template>
 
-
-<script>
+<script type="text/ecmascript-6">
   import Sidebar from './Sidebar.vue';
   import store from '../vuex/store';
 
@@ -27,22 +26,22 @@
   };
 </script>
 
-<style lang="sass">
+<style lang="sass" rel="stylesheet/scss">
   @import "../../../node_modules/font-awesome/scss/font-awesome.scss";
 
   @import "sass/ui.scss";
   @import "sass/const.scss";
 
-  html {
+  html, body {
     width: 300px;
     height: 400px;
   }
   body {
     margin: 0;
-    height: 100%;
   }
   #vue-mount {
     height: inherit;
+
     & > * {
       height: inherit;
       float: left;
@@ -62,10 +61,10 @@
 
   #page-content {
     position: relative;
-
     width: 100%;
     margin-left: 0;
     transition: margin-left .5s ease;
+    overflow: hidden;
 
     #hamburger-menu.in + & {
       margin-left: $menu-width;

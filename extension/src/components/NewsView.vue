@@ -1,29 +1,64 @@
 <template lang="jade">
+  // Navbar
   nav.text-center
     .container.tiny
       .subtitle Reddit
       strong.title /r/{{$route.params.subreddit}}
     ul.nav.listings
-      li(v-for="type in listings" v-link-active)
+      li(v-for='type in listings' v-link-active)
         a.no-decoration(
           v-link="{ path:'/news/' + $route.params.subreddit + '/' + type, params: $route.params, activeClass: 'active' }"
         ) {{ type }}
+
+  // List
+  .news-container.row
+    .row.link(v-for='link in news')
+      .score
+        div {{ link.score }}
+        div.fa.fa-star-o.fa-fw
+
+      .description
+        div {{ link.title }}
+        div
+          span.subtitle submitted {{ link.time }} by {{ link.author }}
+
 </template>
 
-<script>
-  import {fetchUserInfo} from '../vuex/user/actions';
+<script type="text/ecmascript-6">
+  import {fetchNews} from '../vuex/news/actions';
 
   export default {
       name: 'NewsView'
+    , vuex: {
+        getters: {
+          news: ({news}) => news.list
+        }
+        , actions: {
+          fetchNews
+        }
+    }
+
+    // On route change
+    , route: {
+      data ({ to }) {
+        this.fetchNews(
+              to.params.subreddit
+            , to.params.sort
+        );
+      }
+    }
+
+    // Constants
     , data() {
       return {
-        listings: ['hot', 'new', 'random', 'top', 'controversial']
+        // todo: random
+        listings: ['hot', 'new', 'top', 'controversial']
       };
     }
   }
 </script>
 
-<style lang="sass">
+<style lang="sass" rel="stylesheet/scss">
   @import 'sass/const.scss';
 
   ul.listings {
@@ -43,6 +78,28 @@
         border-bottom: 1px solid white;
         font-weight: bold;
       }
+    }
+  }
+
+  .news-container {
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+  }
+
+  .link {
+    padding-left: 0;
+    padding-right: 0;
+
+    & > div {
+      float: left;
+    }
+    .score {
+      width: 15%;
+      text-align: center;
+      font-weight: bold;
+    }
+    .description {
+      width: 85%;
     }
   }
 </style>

@@ -9,11 +9,10 @@
     i.fa.fa-lg.fa-fw.fa-info
     i.fa.fa-lg.fa-fw.fa-github-alt
     span.right
-      i.fa.fa-lg.fa-fw.fa-graduation-cap
       i.fa.fa-lg.fa-fw.fa-sign-out
 </template>
 
-<script>
+<script type="text/ecmascript-6">
   import {fetchUserInfo} from '../vuex/user/actions';
 
   export default {
@@ -33,7 +32,7 @@
   }
 </script>
 
-<style lang="sass">
+<style lang="sass" rel="stylesheet/scss">
   @import 'sass/const.scss';
 
   ul.sidebar {
@@ -56,9 +55,10 @@
   footer {
     position: absolute;
     bottom: 0;
+    color: lightgray;
+
     & > .right {
       float: right;
-      color: gray;
     }
   }
 </style>
