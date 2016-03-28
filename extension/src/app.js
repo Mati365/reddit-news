@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import VueAsyncData from 'vue-async-data';
 
 import App from './components/App.vue';
+import NewsView from './components/NewsView.vue';
 
 /**
  * Configure router and bootstrap Vue.JS app,
@@ -15,7 +16,14 @@ import App from './components/App.vue';
 
   // Configure router
   let router = new VueRouter;
-  router.map({
-  });
+  router
+    .map({
+      '/news/:subreddit': {
+        component: NewsView
+      }
+    })
+    .redirect({
+      '*': '/news/programming'
+    });
   router.start(App, '#vue-mount');
 })();

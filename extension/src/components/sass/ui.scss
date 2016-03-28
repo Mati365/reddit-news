@@ -4,6 +4,9 @@
 
 .container {
   padding: 6px;
+  &.tiny {
+    padding: 3px;
+  }
   width: 100%;
 }
 

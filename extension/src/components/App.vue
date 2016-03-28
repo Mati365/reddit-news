@@ -4,30 +4,16 @@
       sidebar
 
     #page-content
-      nav.text-center
-        .col-1
-          .fa.fa-lg.fa-fw.fa-bars(v-on:click='toggleMenu')
-
-        .col-11
-          div
-            .subtitle Reddit
-            strong.title /r/poland
-          ul.nav.listings
-            li.active hot
-            li new
-            li random
-            li top
-            li controversial
+      .toggle-menu.fa.fa-lg.fa-fw.fa-bars(v-on:click='toggleMenu')
+      router-view(transition transition-mode='out-in')
 </template>
 
 
 <script>
   import Sidebar from './Sidebar.vue';
 
-  const App = {
-    components: {
-      Sidebar
-    }
+  export default {
+      components: {Sidebar}
     , data() {
       return {
         showMenu: false
@@ -37,7 +23,6 @@
       toggleMenu() { this.showMenu = !this.showMenu; }
     }
   };
-  export default App;
 </script>
 
 <style lang="sass">
@@ -72,32 +57,16 @@
       left: 0;
     }
   }
+
   #page-content {
+    position: relative;
+
     width: 100%;
     margin-left: 0;
     transition: margin-left .5s ease;
 
     #hamburger-menu.in + & {
       margin-left: $menu-width;
-    }
-  }
-
-  ul.listings {
-    margin-top: 5px;
-    li {
-      border: 1px solid $separator-color;
-      background: darken(white, 1%);
-
-      position: relative;
-      top: 1px;
-
-      padding: 2px 4px;
-      z-index: 999;
-
-      &.active {
-        background: white;
-        border-bottom: 1px solid white;
-      }
     }
   }
 
@@ -111,16 +80,19 @@
       border-bottom: 1px solid $separator-color;
       padding-bottom: 0;
 
-      .fa {
-        color: gray;
-        &:hover { color: black; }
-      }
       .listings {
         text-align: left;
       }
     }
+  }
 
-    #hamburger-menu.in + #page-content & .fa-bars {
+  .toggle-menu {
+    position: absolute;
+    left: $padding;
+    top: $padding;
+
+    color: gray;
+    #hamburger-menu.in + #page-content > & {
       color: black;
     }
   }
