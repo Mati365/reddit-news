@@ -4,23 +4,23 @@
 
 .container {
   padding: 6px;
+  width: 100%;
 }
 
 .row {
   @extend .container;
 
-  width: 100%;
   display: flex;
   flex-wrap: wrap;
   clear: both;
-  align-items: center;
+  align-items: flex-start;
 }
 
 [class*='col-'] {
   float: left;
 }
 
-//  Generate grid system
+// Generate grid system
 @for $i from 1 through 12 {
   .col-#{$i} {
     $size: percentage($i / 12);
@@ -29,5 +29,28 @@
   }
 }
 
+// Text utils
 .no-select { user-select: none; }
 .text-center { text-align: center; }
+.text-bold { font-weight: bold; }
+.text-right { text-align: right };
+
+.subtitle {
+  font-size: 9px;
+  color: gray;
+}
+
+ul {
+  list-style-type: none;
+  li {
+    @extend .no-select;
+  }
+}
+ul.nav {
+  margin: 0;
+  padding: 0;
+  li {
+    margin: 0 3px 0 0;
+    display: inline-block;
+  }
+}

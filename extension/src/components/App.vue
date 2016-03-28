@@ -1,32 +1,48 @@
 <template lang="jade">
   div
     aside#hamburger-menu(v-bind:class='{in: showMenu}')
-      nav.text-bold Subreddits:
-      .container
-        .item #poland
-        .item #technology
-        .item #4chan
-        .item #cpp0x
-        .item #java
-        .item #javascript
-        .item #stupidmeme
+      sidebar
 
     #page-content
       nav.text-center
         .col-1
           .fa.fa-lg.fa-fw.fa-bars(v-on:click='toggleMenu')
 
-        .col-10
-          .subtitle Reddit
-          strong.title #poland
-
-        .col-1
-          .fa.fa-lg.fa-fw.fa-sign-out
-
+        .col-11
+          div
+            .subtitle Reddit
+            strong.title /r/poland
+          ul.nav.listings
+            li.active hot
+            li new
+            li random
+            li top
+            li controversial
 </template>
+
+
+<script>
+  import Sidebar from './Sidebar.vue';
+
+  const App = {
+    components: {
+      Sidebar
+    }
+    , data() {
+      return {
+        showMenu: false
+      };
+    }
+    , methods: {
+      toggleMenu() { this.showMenu = !this.showMenu; }
+    }
+  };
+  export default App;
+</script>
 
 <style lang="sass">
   @import "../../../node_modules/font-awesome/scss/font-awesome.scss";
+
   @import "sass/ui.scss";
   @import "sass/const.scss";
 
@@ -52,13 +68,6 @@
     transition: left .5s ease;
     background: #f9f9f9;
 
-    .item {
-      @extend .no-select;
-      margin: 5px 0;
-      &:hover {
-        font-weight: bold;
-      }
-    }
     &.in {
       left: 0;
     }
@@ -73,40 +82,46 @@
     }
   }
 
+  ul.listings {
+    margin-top: 5px;
+    li {
+      border: 1px solid $separator-color;
+      background: darken(white, 1%);
+
+      position: relative;
+      top: 1px;
+
+      padding: 2px 4px;
+      z-index: 999;
+
+      &.active {
+        background: white;
+        border-bottom: 1px solid white;
+      }
+    }
+  }
+
   nav {
     @extend .row;
     height: 28px;
+    z-index: 99;
+
     #page-content > & {
-      border-bottom: 1px solid #efefef;
+      height: auto;
+      border-bottom: 1px solid $separator-color;
+      padding-bottom: 0;
+
       .fa {
         color: gray;
         &:hover { color: black; }
       }
-      .subtitle {
-        font-size: 9px;
-        color: gray;
+      .listings {
+        text-align: left;
       }
     }
+
     #hamburger-menu.in + #page-content & .fa-bars {
       color: black;
     }
   }
-
-  .text-bold {
-    font-weight: bold;
-  }
 </style>
-
-<script>
-  const App = {
-    data() {
-      return {
-        showMenu: false
-      };
-    }
-    , methods: {
-      toggleMenu() { this.showMenu = !this.showMenu; }
-    }
-  };
-  export default App;
-</script>
