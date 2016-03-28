@@ -1,14 +1,11 @@
 ![Reddit logo](extension/data/reddit-logo.png?raw=true "Logo")
 
 # reddit-news
-Simple browser extension that shows recent news from reddit written in ES6 and Vue.JS
+Simple browser extension that shows recent news from reddit written in ES6 and Vue.JS+Vuex.
 
-## Todos
-- [x] download news list via reddit api
-- [ ] port extension to firefox
-- [ ] create settings page
-- [x] add multipe subreddits support
-- [ ] commenting news support
+## Screens
+![List](docs/list.png?raw=true "List")
+![News](docs/news.png?raw=true "News")
 
 ## License
 The MIT License (MIT)

@@ -1,6 +1,16 @@
 import {setBrowserAPI} from '../../../src/api/platform';
 
 /**
+ * Open tab
+ * @param url Tab URL
+ */
+function openTab(url) {
+  chrome.tabs.create({
+    url
+  });
+}
+
+/**
  * Show popup, reject if close, resolve if redirect
  * @param clientId  Client ID
  * @param url       OAuth address
@@ -11,11 +21,10 @@ function showOAuthPopup(clientId, url) {
       captureCode: true
     , clientId
   });
-  chrome.tabs.create({
-    url
-  });
+  openTab(url);
 }
 
 setBrowserAPI({
-  showOAuthPopup
+    showOAuthPopup
+  , openTab
 });

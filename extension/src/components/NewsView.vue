@@ -17,14 +17,23 @@
         div {{ link.score }}
         div.fa.fa-star-o.fa-fw
 
-      .description
-        div {{ link.title }}
-        div
-          span.subtitle submitted {{ link.time }} by {{ link.author }}
+      .description(v-bind:class='{ shared: link.thumbnail.length }')
+        a.no-decoration(href='javascript:;' v-on:click='openLink(link.redditURL)') {{ link.title }}
+        div.subtitle
+          span.link
+            a.text-bold.no-decoration(href='javascript:;' v-on:click='openLink(link.url)')
+              i.fa.fa-link &nbsp;
+              | Link
+          span submitted {{ link.time }} by {{ link.author }}
+          span.pull-right {{ link.commentsCount }} #[i.fa.fa-comment-o]
+
+      .thumbnail(v-if='link.thumbnail.length')
+        img(v-bind:src='link.thumbnail')
 
 </template>
 
 <script type="text/ecmascript-6">
+  import Platform from '../api/platform';
   import {fetchNews} from '../vuex/news/actions';
 
   export default {
@@ -45,6 +54,14 @@
               to.params.subreddit
             , to.params.sort
         );
+      }
+    }
+
+    // Methods
+    , methods: {
+      // Bind to platform method
+      openLink(url) {
+        Platform.openTab(url);
       }
     }
 
@@ -93,6 +110,9 @@
     & > div {
       float: left;
     }
+    .link {
+      margin-right: 5px;
+    }
     .score {
       width: 15%;
       text-align: center;
@@ -100,6 +120,17 @@
     }
     .description {
       width: 85%;
+      &.shared {
+        width: 65%;
+      }
+    }
+    .thumbnail {
+      width: 20%;
+      height: auto;
+      padding-left: 5px;
+      & > img {
+        width: 100%;
+      }
     }
   }
 </style>

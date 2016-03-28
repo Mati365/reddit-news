@@ -15,7 +15,7 @@ export const fetchNews = ({dispatch}, subreddit, listing) => {
     .then((res) => {
       // Parse fetch data
       let list = _.map(res.data.children, ({data}) => {
-        return _.pick(data, [
+        let picked = _.pick(data, [
             'author'
           , 'created'
           , 'clicked'
@@ -25,6 +25,10 @@ export const fetchNews = ({dispatch}, subreddit, listing) => {
           , 'url'
           , 'thumbnail'
         ]);
+        return _.assign(picked, {
+            'commentsCount': data['num_comments']
+          , 'redditURL': 'https://reddit.com' + data['permalink']
+        });
       });
 
       // Set store value

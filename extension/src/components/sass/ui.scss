@@ -37,9 +37,13 @@
 .text-center { text-align: center; }
 .text-bold { font-weight: bold; }
 .text-right { text-align: right };
+
 .no-decoration {
   text-decoration: none;
   color: black;
+}
+a.no-decoration:hover {
+  text-decoration: underline;
 }
 
 .subtitle {
