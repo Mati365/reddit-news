@@ -1,13 +1,9 @@
 <template lang="jade">
   nav.text-bold Sub-reddits:
   ul.sidebar
-    li /r/poland
-    li /r/technology
-    li /r/4chan
-    li /r/cpp0x
-    li /r/java
-    li /r/javascript
-    li /r/stupidmeme
+    li(v-if='loading') Loading...
+    li(v-for='subreddit in subs' v-link-active)
+      a.no-decoration(v-link="{ path: '/news/' + subreddit, activeClass: 'text-bold' }") {{ '#' + subreddit }}
 
   footer.container
     i.fa.fa-lg.fa-fw.fa-info
@@ -17,12 +13,39 @@
       i.fa.fa-lg.fa-fw.fa-sign-out
 </template>
 
+<script>
+  import {fetchUserInfo} from '../vuex/user/actions';
+
+  export default {
+      name: 'Sidebar'
+    , vuex: {
+        getters: {
+            subs: ({user}) => user.subs
+          , loading: ({user}) => !user.subs.length && !user.error
+        }
+      , actions: {
+        fetchUserInfo
+      }
+    }
+    , created() {
+      this.fetchUserInfo();
+    }
+  }
+</script>
+
 <style lang="sass">
   @import 'sass/const.scss';
 
   ul.sidebar {
     padding: $padding;
+    padding-top: 0;
+    margin-top: 0;
+    max-height: 87%;
+    overflow-y: auto;
+
     li {
+      overflow: hidden;
+      text-overflow: ellipsis;
       margin: 5px 0;
       &:hover {
         font-weight: bold;
@@ -39,9 +62,3 @@
     }
   }
 </style>
-
-<script>
-  export default {
-    name: 'Sidebar'
-  };
-</script>

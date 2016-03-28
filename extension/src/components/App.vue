@@ -11,9 +11,11 @@
 
 <script>
   import Sidebar from './Sidebar.vue';
+  import store from '../vuex/store';
 
   export default {
       components: {Sidebar}
+    , store
     , data() {
       return {
         showMenu: false
@@ -90,8 +92,11 @@
     position: absolute;
     left: $padding;
     top: $padding;
-
     color: gray;
+
+    &:hover {
+      cursor: pointer;
+    }
     #hamburger-menu.in + #page-content > & {
       color: black;
     }
