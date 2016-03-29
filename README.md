@@ -5,6 +5,13 @@ Simple browser extension that shows recent news from reddit written in ES6 and V
 ![List](docs/list.png?raw=true "List")
 ![News](docs/news.png?raw=true "News")
 
+## Install
+* Download latest [stable version](https://github.com/Mati365/reddit-news/releases/latest)
+* Extract folder to desktop
+* Enable programmer mode in [chrome://extensions](chrome://extensions)
+* Drag and drop folder [chrome://extensions](chrome://extensions)
+* Click on reddit icon
+
 ## License
 The MIT License (MIT)
 
