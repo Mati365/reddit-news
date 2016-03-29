@@ -32,3 +32,18 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     captureCode = false;
   }
 });
+
+/**
+ * Open page and fill form
+ * @param url   Page url
+ * @param form  Fields assoc
+ */
+/* eslint-disable */
+function fillTab(url, form) {
+  chrome.tabs.create({'url': url}, function(tab) {
+    chrome.tabs.executeScript(tab.id, {file: 'injector.js'}, function() {
+      chrome.tabs.sendMessage(tab.id, form);
+    });
+  });
+}
+/* eslint eqeqeq:0*/

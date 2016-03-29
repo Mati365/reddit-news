@@ -19,8 +19,10 @@ Vue.directive('placeholder-if-broken', function() {
 Vue.directive('tab-link', {
   bind() {
     _.assign(this.el, {
-        href: this.expression
-      , onclick: () => Platform.openTab(this.expression)
+      onclick: (e) => {
+        Platform.openTab(this.expression);
+        e.preventDefault();
+      }
     });
   }
 });

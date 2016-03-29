@@ -3,14 +3,14 @@
   nav.text-center
     .container.tiny
       .subtitle Reddit
-      strong.title /r/{{$route.params.subreddit}}
+      strong.title /r/{{ subreddit }}
     ul.nav.listings
       li(v-for='type in listings' v-link-active)
         a.no-decoration(
           v-link="{path:'/news/' + $route.params.subreddit + '/' + type, params: $route.params, activeClass: 'active'}"
         ) {{ type }}
       li
-        a.no-decoration(href='javascript:;')
+        a.no-decoration(href='javascript:;' v-on:click='shareURL')
           i.fa.fa-share-alt &nbsp;
           | Share url
 
@@ -61,6 +61,11 @@
         }
     }
 
+    // Computed fields
+    , computed: {
+      subreddit() { return this.$route.params.subreddit; }
+    }
+
     // On route change
     , route: {
       data ({ to }) {
@@ -91,6 +96,22 @@
 
         // Open tab
         Platform.openTab(redirect ? link.url : link.redditURL);
+      }
+
+      /**
+       * Share actual navigated page URL
+       */
+      , shareURL() {
+        let fillForm = (data) => {
+          Platform.fillTab('https://www.reddit.com/submit.compact', {
+            'newlink': _.extend(data, {
+              'sr': this.subreddit
+            })
+          });
+        };
+        Platform
+          .getTabInfo()
+          .then(fillForm);
       }
     }
   }

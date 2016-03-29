@@ -14,7 +14,7 @@ export const fetchNews = ({dispatch}, subreddit, listing) => {
 
   // Set API
   let promise = null
-    , listings = ['hot', 'new', 'top', 'controversial'];
+    , listings = ['hot', 'new', 'controversial', 'top'];
   if(subreddit === 'general') {
     promise = client.front(listing);
     listings = [...listings, 'rising', 'gilded'];

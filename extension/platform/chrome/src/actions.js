@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import {setBrowserAPI} from '../../../src/api/platform';
 
 /**
@@ -24,7 +26,28 @@ function showOAuthPopup(clientId, url) {
   openTab(url);
 }
 
+/**
+ * Download tab info
+ * @returns {Promise}
+ */
+function getTabInfo() {
+  return new Promise((resolve) => {
+    chrome.windows.getCurrent(function(w) {
+      chrome.tabs.getSelected(w.id, function (response) {
+        resolve(_.pick(response, 'title', 'url'));
+      });
+    });
+  });
+}
+
 setBrowserAPI({
     showOAuthPopup
   , openTab
+  , getTabInfo
+
+  // Open tab and fill with data
+  , fillTab() {
+    let background = chrome.extension.getBackgroundPage();
+    background.fillTab.apply(background, arguments);
+  }
 });
