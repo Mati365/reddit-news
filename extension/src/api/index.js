@@ -4,5 +4,5 @@ import OAuth from './oauth';
 export default OAuth.createClient(
     'reddit'
   , 'XRZp1Svht5HGyQ'
-  , ['identity', 'read', 'vote', 'mysubreddits']
+  , ['identity', 'read', 'mysubreddits']
 );
