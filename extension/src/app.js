@@ -8,6 +8,7 @@ import './directives';
 
 import App from './components/App.vue';
 import NewsView from './components/NewsView.vue';
+import InfoView from './components/InfoView.vue';
 
 /**
  * Configure router and bootstrap Vue.JS app,
@@ -30,9 +31,8 @@ import NewsView from './components/NewsView.vue';
   let router = new VueRouter;
   router
     .map({
-      '/news/:subreddit/:sort': {
-        component: NewsView
-      }
+        '/news/:subreddit/:sort': {component: NewsView}
+      , '/info': {component: InfoView}
     })
     .alias({
       '/news/:subreddit': '/news/:subreddit/hot'

@@ -6,7 +6,7 @@
       a.no-decoration(v-link="{path: '/news/' + subreddit, activeClass: 'text-bold'}") {{ subreddit }}
 
   footer.container
-    i.fa.fa-lg.fa-fw.fa-info
+    a.fa.fa-lg.fa-fw.fa-info(v-link="{path: '/info'}")
     a.fa.fa-lg.fa-fw.fa-github-alt(v-tab-link='https://github.com/Mati365/reddit-news')
     span.right
       i.fa.fa-lg.fa-fw.fa-sign-out(v-on:click='logout')
