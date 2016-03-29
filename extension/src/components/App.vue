@@ -5,7 +5,8 @@
 
     #page-content
       .toggle-menu.fa.fa-lg.fa-fw.fa-bars(v-on:click='toggleMenu')
-      router-view(transition transition-mode='out-in')
+      div(v-on:click='hideIfToggled()')
+        router-view(keep-alive)
 </template>
 
 <script type="text/ecmascript-6">
@@ -21,7 +22,13 @@
       };
     }
     , methods: {
-      toggleMenu() { this.showMenu = !this.showMenu; }
+        toggleMenu() {
+          this.showMenu = !this.showMenu;
+        }
+      , hideIfToggled() {
+        if(this.showMenu)
+          this.showMenu = false;
+      }
     }
   };
 </script>
@@ -47,6 +54,22 @@
       float: left;
     }
   }
+
+  #page-content {
+    position: relative;
+    width: 100%;
+    margin-left: 0;
+    transition: margin-left .5s ease;
+    overflow: hidden;
+
+    #hamburger-menu.in + & {
+      margin-left: $menu-width;
+    }
+    & > div {
+      height: inherit;
+    }
+  }
+
   #hamburger-menu {
     position: fixed;
     width: $menu-width;
@@ -59,24 +82,12 @@
     }
   }
 
-  #page-content {
-    position: relative;
-    width: 100%;
-    margin-left: 0;
-    transition: margin-left .5s ease;
-    overflow: hidden;
-
-    #hamburger-menu.in + & {
-      margin-left: $menu-width;
-    }
-  }
-
   nav {
     @extend .row;
     height: 28px;
     z-index: 99;
 
-    #page-content > & {
+    #page-content > div > & {
       height: auto;
       border-bottom: 1px solid $separator-color;
       padding-bottom: 0;

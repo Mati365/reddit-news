@@ -3,6 +3,7 @@ import types from '../mutations';
 
 const state = {
     list: []
+  , listings: []
   , error: false
 };
 
@@ -10,6 +11,7 @@ const mutations = {
   [types.FETCH_NEWS_REQUEST](state) {
     _.assign(state, {
         list: []
+      // , listings: []
       , error: false
     });
   }

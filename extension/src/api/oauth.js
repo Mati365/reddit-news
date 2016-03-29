@@ -1,3 +1,4 @@
+import store from 'store2';
 import qwest from 'qwest';
 import _ from 'lodash';
 
@@ -40,9 +41,9 @@ class OAuth {
     } else {
       let key = this.clientId + '_' + variable;
       if(!newValue)
-        return localStorage[key];
+        return store.get(key);
       else {
-        localStorage[key] = newValue;
+        store.set(key, newValue);
         return this;
       }
     }
@@ -57,7 +58,7 @@ class OAuth {
       , 'client_id': this.clientId
     }, this.headers));
 
-    localStorage.clear();
+    store.clear();
     Platform
       // Show popup
       .showOAuthPopup(this.clientId, `${this.headers.server}/api/v1/authorize?${queryParams}`)
@@ -98,6 +99,18 @@ class OAuth {
     // parse to JSON
     if(promise)
       return promise.then((data) => JSON.parse(data.response));
+  }
+
+  /**
+   * Get front page JSON, it's not part of api
+   * so it is in separate method
+   * @param name  Front JSON path
+   * @returns {Promise}
+   */
+  front(name='') {
+    return qwest
+      .get(`${this.headers.page}/${name}.json`)
+      .then((data) => JSON.parse(data.response));
   }
 
   /**
@@ -174,6 +187,7 @@ OAuth.Headers = {
   'reddit' : {
     server: 'https://ssl.reddit.com'
   , apiServer: 'https://oauth.reddit.com'
+  , page: 'https://www.reddit.com'
 
   , 'response_type': 'code'
   , 'duration': 'permanent'
