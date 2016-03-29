@@ -9,16 +9,6 @@ import types from '../mutations';
  * @param res  array of childrens from reddit listing response
  */
 function parseListing(res) {
-  // Update cache
-  let cached = store.get('cached_clicked') || {}
-    , time = Date.now();
-
-  // Remove older that 2 days
-  cached = _.omitBy(cached, (cachedTime) => {
-    return time - cachedTime >= 172800000;
-  });
-  store.set('cached_clicked', cached);
-
   // Parse fetch data
   return _.map(res.data.children, ({data}) => {
     let picked = _.pick(data, [
@@ -36,8 +26,6 @@ function parseListing(res) {
     // Fill additional fields
     if(!picked.title)
       picked.title = data['body'];
-    if(!picked.clicked)
-      picked.clicked = !!cached[picked.id];
 
     return _.assign(picked, {
         'commentsCount': data['num_comments']
@@ -55,7 +43,8 @@ export const fetchNews = ({dispatch}, subreddit, listing) => {
   dispatch(types.FETCH_NEWS_REQUEST);
 
   // Find in cache
-  let cache = store.get('cached_listing') || {};
+  let cache = store.get('cached_listing') || {}
+    , time = Date.now();
 
   // Remove cache if expired
   if(cache.subreddit !== subreddit
@@ -82,17 +71,27 @@ export const fetchNews = ({dispatch}, subreddit, listing) => {
         list = parseListing(res);
         // Add 5min cache
         store.set('cached_listing', {
-            exp: Date.now() + 300000
+            exp: time + 300000
           , data: list
           , listing
           , subreddit
         });
       }
 
+      // Remove older that 2 days
+      let cachedClicked = store.get('cached_clicked') || {};
+      cachedClicked = _.omitBy(cachedClicked, (cachedTime) => {
+        return time - cachedTime >= 172800000;
+      });
+      store.set('cached_clicked', cachedClicked);
+
+      // Remove from list array
+      _.map(list, (link) => link.clicked = !!cachedClicked[link.id]);
+
       // Set store value
       dispatch(types.FETCH_NEWS_SUCCESS, {
-          list
-        , listings
+          listings
+        , list
       });
     })
     .catch(() => dispatch(types.FETCH_NEWS_FAIL));
