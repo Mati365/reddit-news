@@ -19,7 +19,8 @@ Vue.directive('placeholder-if-broken', function() {
 Vue.directive('tab-link', {
   bind() {
     _.assign(this.el, {
-      onclick: (e) => {
+        href: 'javascript:;'
+      , onclick: (e) => {
         Platform.openTab(this.expression);
         e.preventDefault();
       }

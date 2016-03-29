@@ -25,3 +25,13 @@ export const fetchUserInfo = ({dispatch}) => {
     // On fetch fail
     .catch(() => dispatch(types.FETCH_USER_FAIL));
 };
+
+
+/**
+ * Reload message list
+ */
+export const fetchUserMessages = ({dispatch}) => {
+  client
+    .api('/message/unread')
+    .then((d) => dispatch(types.FETCH_USER_MESSAGES, d.data.children.length));
+};

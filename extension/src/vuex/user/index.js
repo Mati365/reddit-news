@@ -4,6 +4,7 @@ import types from '../mutations';
 const state = {
     subs: []
   , nick: ''
+  , messages: 0
   , error: false
 };
 
@@ -12,8 +13,12 @@ const mutations = {
     _.assign(state, {
         subs: []
       , nick: ''
+      , messages: 0
       , error: false
     });
+  }
+  , [types.FETCH_USER_MESSAGES](state, messages) {
+    state.messages = messages;
   }
   , [types.FETCH_USER_SUCCESS](state, info) {
     _.assign(state, info);

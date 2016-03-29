@@ -26,8 +26,7 @@ import InfoView from './components/InfoView.vue';
       , sort: 'hot'
     };
 
-  // Configur
-  // e router
+  // Configure router
   let router = new VueRouter;
   router
     .map({

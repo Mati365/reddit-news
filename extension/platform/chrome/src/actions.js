@@ -40,11 +40,20 @@ function getTabInfo() {
   });
 }
 
+/**
+ * Set badge text
+ * @param text  Text in badge
+ */
+function setBadgeText(text) {
+  chrome.browserAction.setBadgeText({text});
+}
+
 setBrowserAPI({
     showOAuthPopup
   , openTab
   , getTabInfo
-
+  , setBadgeText
+  
   // Open tab and fill with data
   , fillTab() {
     let background = chrome.extension.getBackgroundPage();

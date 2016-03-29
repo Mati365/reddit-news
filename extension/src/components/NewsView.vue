@@ -1,9 +1,15 @@
 <template lang="jade">
   // Navbar
-  nav.text-center
-    .container.tiny
-      .subtitle Reddit
-      strong.title /r/{{ subreddit }}
+  nav
+    .container.tiny.text-center
+      span
+        .subtitle Reddit
+        .text-bold.title /r/{{ subreddit }}
+      span.messages
+        a.no-decoration(v-tab-link='https://www.reddit.com/message/unread/')
+          i.fa.fa-envelope-o &nbsp;
+          | {{ messages }}
+
     ul.nav.listings
       li(v-for='type in listings' v-link-active)
         a.no-decoration(
@@ -47,6 +53,7 @@
 
   import Platform from '../api/platform';
   import {fetchNews} from '../vuex/news/actions';
+  import {fetchUserMessages} from '../vuex/user/actions';
 
   export default {
       name: 'NewsView'
@@ -54,10 +61,12 @@
         getters: {
             news: ({news}) => news.list
           , listings: ({news}) => news.listings
+          , messages: ({user}) => user.messages
           , loading: ({news}) => !news.error && !news.list.length
         }
         , actions: {
-          fetchNews
+            fetchNews
+          , fetchUserMessages
         }
     }
 
@@ -78,6 +87,11 @@
             , to.params.sort
         );
       }
+    }
+
+    // Initialize timer after create
+    , created() {
+      this.fetchUserMessages();
     }
 
     // Methods
@@ -144,12 +158,15 @@
       }
     }
   }
-
   .news-container {
     overflow-y: auto;
     height: calc(100vh - 60px);
   }
-
+  .messages {
+    position: absolute;
+    right: $padding;
+    top: $padding;
+  }
   .link {
     padding-left: 0;
     padding-right: 0;

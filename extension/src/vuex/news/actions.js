@@ -77,15 +77,17 @@ export const fetchNews = ({dispatch}, subreddit, listing) => {
   promise
     .then((res) => {
       // If it's array the list is already parsed
-      let list = _.isArray(res) ? res : parseListing(res);
-
-      // Add 5min cache
-      store.set('cached_listing', {
-          exp: Date.now() + 300000
-        , data: list
-        , listing
-        , subreddit
-      });
+      let list = res;
+      if(!_.isArray(res)) {
+        list = parseListing(res);
+        // Add 5min cache
+        store.set('cached_listing', {
+            exp: Date.now() + 300000
+          , data: list
+          , listing
+          , subreddit
+        });
+      }
 
       // Set store value
       dispatch(types.FETCH_NEWS_SUCCESS, {
