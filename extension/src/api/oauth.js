@@ -21,7 +21,6 @@ class OAuth {
 
     // Set to true after doing any request
     this._oauthRequest = false;
-
     if(!this._storage('code'))
       this.showPopup();
   }
@@ -148,7 +147,6 @@ class OAuth {
         data = JSON.parse(data.response);
         if(data.error)
           throw data.error;
-
         this
           ._storage({
               accessToken: data['access_token']
@@ -185,14 +183,14 @@ class OAuth {
 /** Form headers for pages */
 OAuth.Headers = {
   'reddit' : {
-    server: 'https://ssl.reddit.com'
-  , apiServer: 'https://oauth.reddit.com'
-  , page: 'https://www.reddit.com'
-
-  , 'response_type': 'code'
-  , 'duration': 'permanent'
-  , 'state':  Math.random().toString(36).slice(2)
-  , 'redirect_uri': 'https://reddit.com/reddit-news'
+      server: 'https://ssl.reddit.com'
+    , apiServer: 'https://oauth.reddit.com'
+    , page: 'https://www.reddit.com'
+    // Additional flags
+    , 'response_type': 'code'
+    , 'duration': 'permanent'
+    , 'state':  Math.random().toString(36).slice(2)
+    , 'redirect_uri': 'https://reddit.com/reddit-news'
   }
 };
 

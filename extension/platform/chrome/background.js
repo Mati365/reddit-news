@@ -22,7 +22,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   // Check only loading page
   if(!captureCode || changeInfo.status !== 'loading')
     return;
-  
+
   // Map URL params
   var params = parseUrlParams(changeInfo.url);
   if(params.state && params.code) {
@@ -47,3 +47,9 @@ function fillTab(url, form) {
   });
 }
 /* eslint eqeqeq:0*/
+
+// Show notifications on icon
+chrome.browserAction.setBadgeBackgroundColor({color: '#FF0000'});
+badgeListener(function(count) {
+  chrome.browserAction.setBadgeText({text: (count || '').toString()});
+});

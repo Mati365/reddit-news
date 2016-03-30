@@ -102,7 +102,7 @@ gulp.task('build:jade', function() {
 gulp
   .task('copy:data', function() {
     return gulp
-      .src('extension/data/**/*', { base: 'extension/data' })
+      .src('extension/data/**/*', {base: 'extension/data'})
       .pipe(gulp.dest('build/data/'));
   })
   .task('copy:platform', function() {
@@ -111,7 +111,8 @@ gulp
           paths.platform + '/**/*'
         , '!' + paths.platform + '/src'
         , '!' + paths.platform + '/src/**/*'
-      ], { base: paths.platform })
+        , 'extension/platform/shared.js'
+      ])
       .pipe(gulp.dest('build/'));
   });
 
