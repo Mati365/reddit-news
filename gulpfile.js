@@ -11,6 +11,7 @@ var gulp = require('gulp')
   , vueify = require('vueify')
   , browserify = require('browserify')
   , babelify = require('babelify')
+  , watchify = require('watchify')
 
   , source = require('vinyl-source-stream')
   , buffer = require('vinyl-buffer')
@@ -47,28 +48,35 @@ gulp.task('copy:fonts', function() {
 });
 
 /** Compile ES6 scripts to normal */
-gulp.task('build:js', function() {
-  return browserify({
-    entries: [
-        paths.platform + '/src/actions.js'
-      , 'extension/src/app.js'
-    ]
-    , extensions: ['.js']
-    , debug: true
-  })
-    .transform(vueify)
-    .transform(babelify, {
-      presets: ['es2015']
-    })
-    .bundle()
+var bundlerOpts = {
+  entries: [
+      paths.platform + '/src/actions.js'
+    , 'extension/src/app.js'
+  ]
+  , extensions: ['.js']
+  , debug: true
+  , transform: [
+      vueify
+    , [babelify, {'presets': ['es2015']}]
+  ]
+  , sourceType: 'module'
+};
+var bundler = watchify(browserify(bundlerOpts));
 
+/** Bundle function */
+function bundle() {
+  return bundler.bundle()
     // Error handling
     .on('error', plugins.util.log)
     .pipe(source('app.bundle.js'))
     .pipe(buffer())
     .pipe(plugins.if(production, plugins.uglify()))
     .pipe(gulp.dest('build/js'));
-});
+};
+
+gulp.task('build:js', bundle);
+bundler.on('update', bundle);
+bundler.on('log', plugins.util.log);
 
 /** Lint warnings */
 gulp.task('lint', function () {
@@ -108,8 +116,8 @@ gulp
   });
 
 /** Watch all files for changes */
-gulp.task('watch', function() {
-  gulp.watch(paths.scripts, ['lint', 'build:js']);
+gulp.task('watch', ['build:js'], function() {
+  gulp.watch(paths.scripts, ['lint']);
   gulp.watch(paths.views, ['build:jade']);
   gulp.watch([
       paths.platform + '/**/*'

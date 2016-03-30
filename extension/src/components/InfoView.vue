@@ -5,7 +5,7 @@
 
     .row
       strong Author:&nbsp;
-      | Mateusz Baginski
+      | Mateusz Bagiński
 
     .row
       strong E-Mail:&nbsp;
