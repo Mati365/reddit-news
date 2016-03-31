@@ -21,7 +21,7 @@
           | Share url
 
   // List
-  .news-container.row
+  .row(v-el:list)
     .row(v-if='loading') Loading...
     .row.link(v-for='link in news' v-bind:class='{visited: link.clicked}')
       .score
@@ -94,6 +94,20 @@
       this.fetchUserMessages();
     }
 
+    , watch: {
+      news() {
+        localforage
+            .getItem('cachedScroll')
+            .then((val) => {
+              if(val) {
+                // todo: fix this shit, it should be mounted after rendered
+                setTimeout(() => this.$els.list.scrollTop = val, 200);
+                localforage.removeItem('cachedScroll');
+              }
+            });
+      }
+    }
+
     // Methods
     , methods: {
       /**
@@ -104,8 +118,10 @@
       openLink(link, redirect) {
         this.setLinkClicked(link.id);
 
-        // Open tab
-        // Platform.openTab(redirect ? link.url : link.redditURL);
+        // Cache scroll position and open new tab
+        localforage
+            .setItem('cachedScroll', this.$els.list.scrollTop)
+            .then(() => Platform.openTab(redirect ? link.url : link.redditURL));
       }
 
       /**
@@ -153,10 +169,6 @@
         margin-left: 10px;
       }
     }
-  }
-  .news-container {
-    overflow-y: auto;
-    height: calc(100vh - 60px);
   }
   .messages {
     position: absolute;

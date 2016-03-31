@@ -94,6 +94,9 @@ export const fetchNews = ({dispatch}, subreddit, listing) => {
       if(!_.isArray(data)) {
         // Add 5min cache
         data = parseListing(data);
+
+        // Update cache
+        localforage.setItem('cachedScroll');
         localforage.setItem('cachedListing', {
             exp: time + 300000
           , data

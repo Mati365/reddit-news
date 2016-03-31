@@ -63,3 +63,10 @@ ul.nav {
     display: inline-block;
   }
 }
+
+nav {
+  + div, + iframe {
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+  }
+}
