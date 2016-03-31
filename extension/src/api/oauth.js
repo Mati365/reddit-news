@@ -1,4 +1,4 @@
-import store from 'store2';
+import localforage from 'localforage';
 import qwest from 'qwest';
 import _ from 'lodash';
 
@@ -18,11 +18,16 @@ class OAuth {
     this.headers = headers;
     this.clientId = clientId;
     this.scope = scope.join(',');
+    this.store = localforage.createInstance({
+        name: 'oauth'
+      , driver: localforage.LOCALSTORAGE
+    });
 
     // Set to true after doing any request
     this._oauthRequest = false;
-    if(!this._storage('code'))
-      this.showPopup();
+
+    // Show popup if code doesn't exist in storage
+    this._storage('code').then((code) => !code && this.showPopup());
   }
 
   /**
@@ -33,32 +38,48 @@ class OAuth {
    * @private
    */
   _storage(variable, newValue) {
-    if(_.isObject(variable)) {
-      _.each(variable, (val, key) => this._storage(key, val));
-      return this;
+    if(_.isArray(variable))
+      return Promise.all(_.map(variable, (el) => this._storage(el)));
 
-    } else {
-      let key = this.clientId + '_' + variable;
-      if(!newValue)
-        return store.get(key);
-      else {
-        store.set(key, newValue);
-        return this;
-      }
-    }
+    // If it has assoc of values assign them all
+    let promise = this.store
+      .getItem(this.clientId)
+      .then((data) => data || {});
+
+    // Check is variable assoc
+    let isAssoc = _.isObject(variable);
+    if(newValue || isAssoc) {
+      return promise.then((data) => {
+        this.store.setItem(
+            this.clientId
+          , _.assign(data, isAssoc ? variable : {[variable]: newValue})
+        );
+      });
+    } else
+      return promise.then((data) => data[variable]);
+  }
+
+  /**
+   * Clears all data
+   */
+  logout() {
+    this.store.clear();
   }
 
   /**
    * Show authorization tab and close popup
+   * @returns {Promise}
    */
   showPopup() {
+    this.logout();
+
+    // Make request
     let queryParams = OAuth.serializeURL(_.assign({
         'scope': this.scope
       , 'client_id': this.clientId
     }, this.headers));
 
-    store.clear();
-    Platform
+    return Platform
       // Show popup
       .showOAuthPopup(this.clientId, `${this.headers.server}/api/v1/authorize?${queryParams}`)
 
@@ -74,30 +95,34 @@ class OAuth {
    * @returns {Promise}
    */
   api(path, data={}, type='get') {
-    let promise = null
-      , request = () => {
-        return qwest[type](`${this.headers.apiServer}/${path}`, data, {
-          headers: {
-            'Authorization': `bearer ${this._storage('accessToken')}`
-          }
-        });
-      };
+    let requestPromise = (token) => {
+      return qwest[type](`${this.headers.apiServer}/${path}`, data, {
+        headers: {
+          'Authorization': `bearer ${token}`
+        }
+      });
+    };
 
-    // If there is no access token full auth
-    if(!this._storage('accessToken'))
-      promise = this._authorize().then(request);
+    return this
+      ._storage(['accessToken', 'expires'])
+      .then(([accessToken, expires]) => {
+        let promise = null;
 
-    // Regenerate token if older than 1 hour
-    else if(Date.now() >= parseInt(this._storage('expires')))
-      promise = this._authorize(true).then(request);
+        // If there is no access token full auth
+        if(!accessToken)
+          promise = this._authorize().then(requestPromise);
 
-    // If success
-    else
-      promise = request();
+        // Regenerate token if older than 1 hour
+        else if(Date.now() >= parseInt(expires))
+          promise = this._authorize(true).then(requestPromise);
 
-    // parse to JSON
-    if(promise)
-      return promise.then((data) => JSON.parse(data.response));
+        // If success
+        else
+          promise = requestPromise(accessToken);
+
+        // parse to JSON
+        return promise.then((data) => JSON.parse(data.response));
+      });
   }
 
   /**
@@ -124,38 +149,49 @@ class OAuth {
     else
       this._oauthRequest = true;
 
-    // Create form data
-    let formData = {
-        'grant_type': refresh
-          ? 'refresh_token'
-          : 'authorization_code'
+    // Authorize promise
+    let requestPromise = ([code, refreshToken]) => {
+      // Create form data
+      let formData = {
+          'grant_type': refresh ? 'refresh_token' : 'authorization_code'
+        , 'redirect_uri': this.headers['redirect_uri']
+        , code
+      };
+      if(refresh)
+        formData['refresh_token'] = refreshToken;
 
-      , 'redirect_uri': this.headers['redirect_uri']
-      , 'code': this._storage('code')
+      // Getting access token if not showing Popup
+      return qwest
+        .post(`${this.headers.server}/api/v1/access_token`, formData, {
+          headers: {
+            'Authorization': `Basic ${btoa(this.clientId + ':')}`
+          }
+        })
+        .then((data) => [refreshToken, data]);
     };
-    if(refresh)
-      formData['refresh_token'] = this._storage('refreshToken');
 
-    // Getting access token if not showing Popup
-    return qwest
-      .post(`${this.headers.server}/api/v1/access_token`, formData, {
-        headers: {
-          'Authorization': `Basic ${btoa(this.clientId + ':')}`
-        }
-      })
-      .then((data) => {
+    // Fetch local cache
+    return this
+      ._storage(['code', 'refreshToken'])
+      .then(requestPromise)
+
+      // Parse data
+      .then(([refreshToken, data]) => {
         data = JSON.parse(data.response);
         if(data.error)
           throw data.error;
+
+        // Cache values
         this
           ._storage({
               accessToken: data['access_token']
             , expires: Date.now() + parseInt(data['expires_in']) * 1000
-            , refreshToken: refresh
-              ? this._storage('refreshToken')
-              : data['refresh_token']
+            , refreshToken: refresh ? refreshToken : data['refresh_token']
           })
           ._oauthRequest = false;
+
+        // Return access token
+        return data['access_token'];
       })
       .catch((error) => {
         error === 'invalid_grant' && this.showPopup();
@@ -186,6 +222,7 @@ OAuth.Headers = {
       server: 'https://ssl.reddit.com'
     , apiServer: 'https://oauth.reddit.com'
     , page: 'https://www.reddit.com'
+
     // Additional flags
     , 'response_type': 'code'
     , 'duration': 'permanent'

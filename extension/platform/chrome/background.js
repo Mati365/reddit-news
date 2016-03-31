@@ -26,10 +26,13 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   // Map URL params
   var params = parseUrlParams(changeInfo.url);
   if(params.state && params.code) {
-    localStorage[clientId + '_code'] = params.code;
-    chrome.tabs.remove(tab.id);
-
     captureCode = false;
+
+    // Fetch data to localforage
+    localStorage['oauth/' + clientId] = JSON.stringify({
+      code: params.code
+    });
+    chrome.tabs.remove(tab.id);
   }
 });
 

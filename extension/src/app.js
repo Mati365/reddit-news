@@ -1,14 +1,14 @@
-import store from 'store2';
+import localforage from 'localforage';
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueAsyncData from 'vue-async-data';
 
-import './directives';
-
 import App from './components/App.vue';
 import NewsView from './components/NewsView.vue';
 import InfoView from './components/InfoView.vue';
+
+import './directives';
 
 /**
  * Configure router and bootstrap Vue.JS app,
@@ -19,13 +19,6 @@ import InfoView from './components/InfoView.vue';
     .use(VueRouter)
     .use(VueAsyncData);
 
-  // Cached route
-  let route = store.get('cached_route') ||
-    {
-        subreddit: 'general'
-      , sort: 'hot'
-    };
-
   // Configure router
   let router = new VueRouter;
   router
@@ -35,9 +28,18 @@ import InfoView from './components/InfoView.vue';
     })
     .alias({
       '/news/:subreddit': '/news/:subreddit/hot'
-    })
-    .redirect({
-      '*': `/news/${route.subreddit}/${route.sort}`
     });
+
+  // Load cached route
+  localforage
+    .getItem('cachedListing')
+    .then((data) => {
+      if(!data)
+        data = {subreddit: 'general', listing: 'hot'};
+
+      // Go to route
+      router.go(`/news/${data.subreddit}/${data.listing}`);
+    });
+
   router.start(App, '#vue-mount');
 })();

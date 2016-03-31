@@ -26,6 +26,13 @@ export const fetchUserInfo = ({dispatch}) => {
     .catch(() => dispatch(types.FETCH_USER_FAIL));
 };
 
+/**
+ * Set menu visible
+ * @param visible True if visible
+ */
+export const setMenuVisible = ({dispatch}, visible) => {
+  dispatch(types.SET_MENU_VISIBLE, visible);
+};
 
 /**
  * Reload message list

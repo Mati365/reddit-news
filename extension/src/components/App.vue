@@ -12,22 +12,25 @@
 <script type="text/ecmascript-6">
   import Sidebar from './Sidebar.vue';
   import store from '../vuex/store';
+  import {setMenuVisible} from '../vuex/user/actions';
 
   export default {
       components: {Sidebar}
     , store
-    , data() {
-      return {
-        showMenu: false
-      };
+    , vuex: {
+      getters: {
+        showMenu: ({user}) => user.ui.menu
+      }
+      , actions: {
+        setMenuVisible
+      }
     }
     , methods: {
-        toggleMenu() {
-          this.showMenu = !this.showMenu;
-        }
+      toggleMenu() {
+        this.setMenuVisible(!this.showMenu);
+      }
       , hideIfToggled() {
-        if(this.showMenu)
-          this.showMenu = false;
+        this.showMenu && this.setMenuVisible(true);
       }
     }
   };

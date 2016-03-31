@@ -6,6 +6,9 @@ const state = {
   , nick: ''
   , messages: 0
   , error: false
+  , ui : {
+    menu: false
+  }
 };
 
 const mutations = {
@@ -25,6 +28,9 @@ const mutations = {
   }
   , [types.FETCH_USER_FAIL](state) {
     state.error = true;
+  }
+  , [types.SET_MENU_VISIBLE](state, visible) {
+    state.ui.menu = visible;
   }
 };
 

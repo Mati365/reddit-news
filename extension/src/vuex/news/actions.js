@@ -1,4 +1,4 @@
-import store from 'store2';
+import localforage from 'localforage';
 import _ from 'lodash';
 
 import client from '../../api';
@@ -35,64 +35,99 @@ function parseListing(res) {
 }
 
 /**
+ * Set link clicked
+ * @param id  Link id
+ */
+export const setLinkClicked = ({dispatch}, id) => {
+  dispatch(types.SET_LINK_CLICKED, id);
+
+  // Write to cache
+  localforage.getItem('cachedClicked').then((data) => {
+    data[id] = Date.now();
+    localforage.setItem('cachedClicked', data);
+  });
+};
+
+/**
  * Fetch list of news
  * @param subreddit Subreddit name
  * @param listing   Listing
  */
 export const fetchNews = ({dispatch}, subreddit, listing) => {
+  let time = Date.now();
+
   dispatch(types.FETCH_NEWS_REQUEST);
+  return localforage
+    .getItem('cachedListing')
+    // Validate cache
+    .then((cache) => {
+      if(!cache
+          || cache.subreddit !== subreddit
+          || cache.listing !== listing
+          || cache.exp <= Date.now())
+        cache = {};
+      return cache;
+    })
 
-  // Find in cache
-  let cache = store.get('cached_listing') || {}
-    , time = Date.now();
+    // Detect menu
+    .then((cache) => {
+      let promise = !_.isEmpty(cache) && cache.data.length
+        ? Promise.resolve(cache.data)
+        : null;
 
-  // Remove cache if expired
-  if(cache.subreddit !== subreddit
-      || cache.listing !== listing
-      || cache.exp <= Date.now())
-    cache = {};
+      // Detect menu
+      let listings = ['hot', 'new', 'controversial', 'top'];
+      if(subreddit === 'general') {
+        listings = [...listings, 'rising', 'gilded'];
+        promise = promise || client.front(listing);
 
-  // Set API
-  let promise = !_.isEmpty(cache) && Promise.resolve(cache.data)
-    , listings = ['hot', 'new', 'controversial', 'top'];
+      } else if(!promise)
+        promise = client.api(`/r/${subreddit}/${listing}`);
 
-  if(subreddit === 'general') {
-    promise = promise || client.front(listing);
-    listings = [...listings, 'rising', 'gilded'];
-  } else if(!promise)
-    promise = client.api(`/r/${subreddit}/${listing}`);
+      // Return promise
+      return promise.then((data) => [data, listings]);
+    })
 
-  // Download list
-  promise
-    .then((res) => {
-      // If it's array the list is already parsed
-      let list = res;
-      if(!_.isArray(res)) {
-        list = parseListing(res);
+    // Parse response
+    .then(([data, listings]) => {
+      // If it's from cache
+      if(!_.isArray(data)) {
         // Add 5min cache
-        store.set('cached_listing', {
+        data = parseListing(data);
+        localforage.setItem('cachedListing', {
             exp: time + 300000
-          , data: list
+          , data
           , listing
           , subreddit
         });
       }
 
-      // Remove older that 2 days
-      let cachedClicked = store.get('cached_clicked') || {};
-      cachedClicked = _.omitBy(cachedClicked, (cachedTime) => {
-        return time - cachedTime >= 172800000;
-      });
-      store.set('cached_clicked', cachedClicked);
-
-      // Remove from list array
-      _.map(list, (link) => link.clicked = !!cachedClicked[link.id]);
-
-      // Set store value
-      dispatch(types.FETCH_NEWS_SUCCESS, {
-          listings
-        , list
-      });
+      // Fetch clicked
+      return localforage
+        .getItem('cachedClicked')
+        .then((clicked) => [data, listings, clicked || {}]);
     })
+
+    // Mark as clicked and finish
+    .then(([data, listings, clicked]) => {
+      // Check clicked expired
+      clicked = _.omitBy(clicked, (cachedTime) => {
+        return time - cachedTime >= 86400000;
+      });
+      return localforage
+        .setItem('cachedClicked', clicked)
+        .then(() => {
+          // Remove from list array
+          _.each(data, (link) => { link.clicked = link.id in clicked; });
+
+          // Set store value
+          dispatch(types.FETCH_NEWS_SUCCESS, {
+              'list': data
+            , listings
+          });
+        });
+    })
+
+    // Catch errors
     .catch(() => dispatch(types.FETCH_NEWS_FAIL));
 };

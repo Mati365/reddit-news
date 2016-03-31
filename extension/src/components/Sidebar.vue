@@ -13,16 +13,18 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import store from 'store2';
+  import client from '../api';
+
+  import localforage from 'localforage';
   import {fetchUserInfo} from '../vuex/user/actions';
 
   export default {
       name: 'Sidebar'
     , vuex: {
-        getters: {
-            subs: ({user}) => ['general', ...user.subs]
-          , loading: ({user}) => !user.subs.length && !user.error
-        }
+      getters: {
+          subs: ({user}) => ['general', ...user.subs]
+        , loading: ({user}) => !user.subs.length && !user.error
+      }
       , actions: {
         fetchUserInfo
       }
@@ -30,7 +32,8 @@
     , methods: {
       // Logout user
       logout() {
-        store.clear();
+        client.logout();
+        localforage.clear();
         window.close();
       }
     }

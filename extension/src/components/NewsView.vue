@@ -49,11 +49,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import store from 'store2';
+  import localforage from 'localforage';
 
   import Platform from '../api/platform';
-  import {fetchNews} from '../vuex/news/actions';
-  import {fetchUserMessages} from '../vuex/user/actions';
+  import {fetchNews, setLinkClicked} from '../vuex/news/actions';
+  import {fetchUserMessages, setMenuVisible} from '../vuex/user/actions';
 
   export default {
       name: 'NewsView'
@@ -67,6 +67,8 @@
         , actions: {
             fetchNews
           , fetchUserMessages
+          , setLinkClicked
+          , setMenuVisible
         }
     }
 
@@ -78,14 +80,12 @@
     // On route change
     , route: {
       data ({ to }) {
-        // Cache route because chrome is reloading popup every time
-        store.set('cached_route', to.params);
-
         // Load news
         this.fetchNews(
               to.params.subreddit
             , to.params.sort
         );
+        this.setMenuVisible(false);
       }
     }
 
@@ -102,14 +102,10 @@
        * @param redirect  Redirect to link attachment
        */
       openLink(link, redirect) {
-        // There is a problem with clicked property in reddit api
-        let cached = store.get('cached_clicked') || {};
-        store.set('cached_clicked', _.assign(cached, {
-          [link.id]: Date.now()
-        }));
+        this.setLinkClicked(link.id);
 
         // Open tab
-        Platform.openTab(redirect ? link.url : link.redditURL);
+        // Platform.openTab(redirect ? link.url : link.redditURL);
       }
 
       /**

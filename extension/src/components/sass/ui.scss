@@ -42,13 +42,10 @@
   text-decoration: none;
   color: black;
 }
-a.no-decoration:hover {
-  text-decoration: underline;
-}
-
-.subtitle {
-  font-size: 9px;
-  color: gray;
+a.no-decoration {
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 ul {

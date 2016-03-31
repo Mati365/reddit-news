@@ -11,9 +11,11 @@ const mutations = {
   [types.FETCH_NEWS_REQUEST](state) {
     _.assign(state, {
         list: []
-      // , listings: []
       , error: false
     });
+  }
+  , [types.SET_LINK_CLICKED](state, id) {
+    _.find(state.list, {id}).clicked = true;
   }
   , [types.FETCH_NEWS_SUCCESS](state, info) {
     _.assign(state, info);
