@@ -1,6 +1,6 @@
 {
   "name": "reddit-news",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Simple browser extension that shows recent news from reddit",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

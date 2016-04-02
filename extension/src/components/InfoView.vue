@@ -1,5 +1,5 @@
 <template lang="jade">
-  .container.text-center
+  .container
     .row
       h1 #[i.fa.fa-reddit] reddit-news
 
