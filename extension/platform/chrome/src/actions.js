@@ -8,7 +8,8 @@ import {setBrowserAPI} from '../../../src/api/platform';
  */
 function openTab(url) {
   chrome.tabs.create({
-    url
+      active: true
+    , url
   });
 }
 
@@ -32,10 +33,11 @@ function showOAuthPopup(clientId, url) {
  */
 function getTabInfo() {
   return new Promise((resolve) => {
-    chrome.windows.getCurrent(function(w) {
-      chrome.tabs.getSelected(w.id, function (response) {
-        resolve(_.pick(response, 'title', 'url'));
-      });
+    chrome.tabs.query({
+        active: true
+      , lastFocusedWindow: true
+    }, ([tab]) => {
+      resolve(_.pick(tab, 'title', 'url'));
     });
   });
 }

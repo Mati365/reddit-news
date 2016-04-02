@@ -8,8 +8,9 @@ import Platform from './api/platform';
  * directive replace them with placeholder
  */
 Vue.directive('placeholder-if-broken', function() {
-  this.el.onerror = function() {
+  this.el.onerror = function(e) {
     this.src = 'https://www.raceentry.com/img/Race-Registration-Image-Not-Found.png';
+    e.preventDefault();
   };
 });
 
@@ -25,5 +26,17 @@ Vue.directive('tab-link', {
         e.preventDefault();
       }
     });
+  }
+});
+
+/**
+ * Expand image on click
+ */
+Vue.directive('expand-click', {
+  bind() {
+    this.el.onclick = (e) => {
+      console.log(e);
+      e.preventDefault();
+    };
   }
 });

@@ -1,7 +1,7 @@
 <template lang="jade">
-  .container
+  .container.text-center
     .row
-      h1 reddit-news
+      h1 #[i.fa.fa-reddit] reddit-news
 
     .row
       strong Author:&nbsp;
@@ -29,5 +29,5 @@
 
     .row
       strong Version: &nbsp;
-      | v.0.1.3
+      | v.0.1.4
 </template>

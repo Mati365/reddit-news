@@ -43,9 +43,13 @@
               | Link
           span submitted {{ link.time }} by {{ link.author }}
 
-      .thumbnail(v-if='link.thumbnail.length')
-        img(v-bind:src='link.thumbnail' v-placeholder-if-broken)
 
+      img.thumbnail(
+        v-if='link.thumbnail.length'
+        v-bind:src='link.thumbnail'
+        v-placeholder-if-broken
+        v-expand-click
+      )
 </template>
 
 <script type="text/ecmascript-6">
@@ -99,11 +103,7 @@
         localforage
             .getItem('cachedScroll')
             .then((val) => {
-              if(val) {
-                // todo: fix this shit, it should be mounted after rendered
-                setTimeout(() => this.$els.list.scrollTop = val, 200);
-                localforage.removeItem('cachedScroll');
-              }
+              val && this.$nextTick(() => this.$els.list.scrollTop = val);
             });
       }
     }
@@ -186,9 +186,6 @@
       color: gray;
       -webkit-filter: grayscale(100%);
     }
-    & > div {
-      float: left;
-    }
     .score {
       width: 15%;
       text-align: center;
@@ -202,18 +199,18 @@
       }
     }
     .subtitle {
+      color: gray;
       margin-top: 5px;
       & > span {
         margin-right: 6px;
       }
     }
-    .thumbnail {
+    img.thumbnail {
       max-width: 20%;
       max-height: 64px;
       padding-left: 5px;
-      & > img {
-        width: 100%;
-        height: 100%;
+      &:hover {
+        cursor: pointer;
       }
     }
   }

@@ -64,6 +64,11 @@ ul.nav {
   }
 }
 
+.subtitle {
+  font-size: 9px;
+  color: gray;
+}
+
 nav {
   + div, + iframe {
     overflow-y: auto;

@@ -1,11 +1,12 @@
 <template lang="jade">
-  nav.text-bold Sub-reddits:
-  div(v-if='loading') Loading...
+  nav.text-bold(v-show='!loading') Sub-reddits:
+  nav.text-bold(v-if='loading') Loading...
   ul.sidebar
     li(v-for='subreddit in subs' v-link-active)
       a.no-decoration(v-link="{path: '/news/' + subreddit, activeClass: 'text-bold'}") {{ subreddit }}
 
   footer.container
+    a.fa.fa-lg.fa-fw.fa-plus(v-tab-link='https://www.reddit.com/subreddits/')
     a.fa.fa-lg.fa-fw.fa-info(v-link="{path: '/info'}")
     a.fa.fa-lg.fa-fw.fa-github-alt(v-tab-link='https://github.com/Mati365/reddit-news')
     span.right
@@ -76,6 +77,10 @@
     }
     a.fa {
       color: lightgray;
+      text-decoration: none;
+      &:hover {
+        color: black;
+      }
     }
   }
 </style>

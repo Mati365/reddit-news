@@ -1,30 +1,38 @@
 {
-  "manifest_version": 2
-, "name": "reddit-news"
-, "description": "Simple browser extension that shows recent news from reddit."
-, "version": "0.1.3"
-, "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
-, "browser_action": {
-    "default_icon": "data/reddit-logo.png"
-  , "default_popup": "views/popup.html"
-  }
-, "icons": {
-    "16": "data/reddit-logo.png"
-  , "48": "data/reddit-logo.png"
-  , "128": "data/reddit-logo.png"
-  }
-, "background": {
-    "scripts": [
-        "shared.js"
-      , "background.js"
+    "manifest_version": 2
+  , "name": "reddit-news"
+  , "key": "bnnempiplcalegfiamojbbgdjbnkmlhp"
+  , "description": "Simple browser extension that shows recent news from reddit."
+  , "version": "0.1.4"
+  , "browser_action": {
+      "default_icon": "data/reddit-logo.png"
+    , "default_popup": "views/popup.html"
+    }
+  , "icons": {
+      "16": "data/reddit-logo.png"
+    , "48": "data/reddit-logo.png"
+    }
+  , "background": {
+      "scripts": [
+          "shared.js"
+        , "background.js"
+      ]
+    }
+  , "web_accessible_resources": [
+      "views/*.html"
     ]
-  }
-, "web_accessible_resources": [
-    "views/*.html"
-  ]
-, "permissions": [
-    "<all_urls>"
-  , "tabs"
-  , "storage"
-  ]
+  , "permissions": [
+      "<all_urls>"
+    , "tabs"
+    , "storage"
+    ]
+  , "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+  , "update_url": "https://github.com/Mati365/reddit-news/edit/master/updates.xml"
+  , "applications": {
+      "gecko": {
+          "id": "redditnews@mati365.com"
+        , "strict_min_version": "45.0"
+        , "update_url": "https://github.com/Mati365/reddit-news/edit/master/updates.json"
+      }
+    }
 }

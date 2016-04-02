@@ -34,7 +34,7 @@ var paths = {
 
 /** Clean project */
 gulp.task('clean', function() {
-  return del(['build']);
+  return del(['build', 'dist']);
 });
 
 /** Copy libs data into dist folder */
@@ -72,7 +72,7 @@ function bundle() {
     .pipe(buffer())
     .pipe(plugins.if(production, plugins.uglify()))
     .pipe(gulp.dest('build/js'));
-};
+}
 
 gulp.task('build:js', bundle);
 bundler.on('update', bundle);
@@ -96,6 +96,18 @@ gulp.task('build:jade', function() {
     .src(paths.views)
     .pipe(plugins.jade())
     .pipe(gulp.dest('build/views'));
+});
+
+/** Make packages */
+gulp.task('build:dist', function() {
+  return gulp
+    .src('build/**/*')
+
+    .pipe(plugins.zip('chrome.zip'))
+    .pipe(gulp.dest('dist/'))
+
+    .pipe(plugins.rename('firefox.xpi'))
+    .pipe(gulp.dest('dist/'));
 });
 
 /** Copy files */
@@ -128,7 +140,7 @@ gulp.task('watch', ['build:js'], function() {
 
 /** Build project */
 gulp.task('build', function(callback) {
-  runSequence('clean', 'lint', 'copy:fonts', ['build:js', 'build:jade', 'copy:data', 'copy:platform'], callback);
+  runSequence('clean', 'lint', 'copy:fonts', ['build:js', 'build:jade', 'copy:data', 'copy:platform'], 'build:dist', callback);
 });
 
 /** Default task */

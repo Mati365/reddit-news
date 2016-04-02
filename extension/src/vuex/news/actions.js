@@ -27,6 +27,10 @@ function parseListing(res) {
     if(!picked.title)
       picked.title = data['body'];
 
+    // If thumbnail is relative path to reddit
+    if(!/^https?/i.test(picked.thumbnail))
+      picked.thumbnail = (picked.thumbnail === 'nsfw' ? 'https://www.reddit.com/static/nsfw2.png' : '');
+
     return _.assign(picked, {
         'commentsCount': data['num_comments']
       , 'redditURL': 'https://reddit.com' + data['permalink']

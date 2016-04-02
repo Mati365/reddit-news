@@ -48,6 +48,10 @@
   }
   body {
     margin: 0;
+    /* For firefox with broken fonts */
+    font-family: Ubuntu, Arial, sans-serif;
+    font-size: 12px;
+    overflow: hidden
   }
   #vue-mount {
     height: inherit;
