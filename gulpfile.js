@@ -103,10 +103,10 @@ gulp.task('build:dist', function() {
   return gulp
     .src('build/**/*')
 
-    .pipe(plugins.zip('chrome.zip'))
+    .pipe(plugins.zip('reddit-news.zip'))
     .pipe(gulp.dest('dist/'))
 
-    .pipe(plugins.rename('firefox.xpi'))
+    .pipe(plugins.rename('reddit-news.xpi'))
     .pipe(gulp.dest('dist/'));
 });
 
