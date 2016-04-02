@@ -27,9 +27,9 @@ function badgeListener(callback, time) {
   // todo: Fix it
   for(var key in localStorage) {
     // If found access token
-    if(localStorage.hasOwnProperty(key) && ~key.indexOf('_accessToken')) {
+    if(localStorage.hasOwnProperty(key) && ~key.indexOf('oauth/')) {
       // store client lib store data in json
-      var token = JSON.parse(localStorage[key]);
+      var token = JSON.parse(localStorage[key]).accessToken;
       getNotificationsCount(token, callback);
       break;
     }
@@ -37,4 +37,4 @@ function badgeListener(callback, time) {
 
   // Run again after 10s delay
   setTimeout(badgeListener.bind(this, callback), time || 10000);
-};
+}
