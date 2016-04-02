@@ -3,7 +3,7 @@
   , "name": "reddit-news"
   , "key": "bnnempiplcalegfiamojbbgdjbnkmlhp"
   , "description": "Simple browser extension that shows recent news from reddit."
-  , "version": "0.1.5"
+  , "version": "0.1.6"
   , "browser_action": {
       "default_icon": "data/reddit-logo.png"
     , "default_popup": "views/popup.html"
