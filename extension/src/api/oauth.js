@@ -185,7 +185,7 @@ class OAuth {
         this
           ._storage({
               accessToken: data['access_token']
-            , expires: Date.now() + 30 * 60 * 1000
+            , expires: Date.now() + 20 * 60 * 1000
             , refreshToken: refresh ? refreshToken : data['refresh_token']
           })
           ._oauthRequest = false;
