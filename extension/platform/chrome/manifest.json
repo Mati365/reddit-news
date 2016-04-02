@@ -27,12 +27,12 @@
     , "storage"
     ]
   , "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
-  , "update_url": "https://github.com/Mati365/reddit-news/edit/master/updates.xml"
+  , "update_url": "https://raw.githubusercontent.com/Mati365/reddit-news/master/updates.xml"
   , "applications": {
       "gecko": {
           "id": "redditnews@mati365.com"
         , "strict_min_version": "45.0"
-        , "update_url": "https://github.com/Mati365/reddit-news/edit/master/updates.json"
+        , "update_url": "https://raw.githubusercontent.com/Mati365/reddit-news/master/updates.json"
       }
     }
 }
