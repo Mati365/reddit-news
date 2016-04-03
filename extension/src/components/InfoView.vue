@@ -29,5 +29,5 @@
 
     .row
       strong Version: &nbsp;
-      | v.0.1.6
+      | v.0.1.7
 </template>

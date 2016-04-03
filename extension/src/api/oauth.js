@@ -24,7 +24,7 @@ class OAuth {
     });
 
     // Set to true after doing any request
-    this._oauthRequest = false;
+    this._oauthRequest = null;
 
     // Show popup if code doesn't exist in storage
     this._storage('code').then((code) => !code && this.showPopup());
@@ -185,6 +185,7 @@ class OAuth {
               accessToken: data['access_token']
             , expires: Date.now() + 30 * 60 * 1000
             , refreshToken: refresh ? refreshToken : data['refresh_token']
+            , clientId: this.clientId
           })
           .then(() => {
             this._oauthRequest = null;
