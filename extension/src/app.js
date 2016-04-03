@@ -37,14 +37,19 @@ import './directives';
   localforage
     .getItem('cachedListing')
     .then((params) => {
-      if(!params)
+      if(!params) {
         params = {
             type: 'subreddit'
-          , subreddit: 'general'
-          , listing: 'hot'
+          , name: 'general'
+          , sort: 'hot'
         };
+      }
+
       // Go to route
-      router.go(`/news/${params.type}/${params.subreddit}/${params.listing}`);
+      router.go({
+          name: 'news'
+        , params
+      });
     });
 
   router.start(App, '#vue-mount');

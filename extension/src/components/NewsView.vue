@@ -65,9 +65,10 @@
         getters: {
             news: ({news}) => news.list
           , listings: ({news}) => news.listings
+          , loading: ({news}) => !news.error && !news.list.length
+
           , messages: ({user}) => user.messages
           , multis: ({user}) => user.subs.multis
-          , loading: ({news}) => !news.error && !news.list.length
         }
         , actions: {
             fetchNews
@@ -87,22 +88,32 @@
     // On route change
     , route: {
       data ({ to }) {
-        // Load news
-        let {name, sort} = to.params
-          , multi = to.params.type === 'multi';
+        let multi = to.params.type === 'multi'
+          , namePromise = multi
+            ? localforage.getItem('cachedListing').then((data) => data.subreddits)
+            : Promise.resolve();
 
-        this.fetchNews(
-              multi && name
-            , multi ? this.multis.length && _.find(this.multis, {name}).subreddits : name
-            , sort
-        );
+        // Fetch data after login
+        const loadData = (subreddits) => {
+          let {name, sort} = to.params;
+
+          // Check multi list
+          this.fetchNews(
+                multi && name
+              , multi ? (subreddits || _.find(this.multis, {name}).subreddits) : name
+              , sort
+          );
+        };
+
+        // Fetch multi cache after login
+        if(multi)
+          namePromise.then(loadData);
+        else
+          loadData();
+
+        // Hide menu
         this.setMenuVisible(false);
       }
-    }
-
-    // Initialize timer after create
-    , created() {
-      this.fetchUserMessages();
     }
 
     , watch: {

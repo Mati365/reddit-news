@@ -28,9 +28,9 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import client from '../api';
-
   import localforage from 'localforage';
+
+  import client from '../api';
   import {fetchUserInfo} from '../vuex/user/actions';
 
   export default {

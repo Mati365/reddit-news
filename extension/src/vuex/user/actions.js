@@ -8,7 +8,7 @@ import types from '../mutations';
  */
 export const fetchUserInfo = ({dispatch}) => {
   dispatch(types.FETCH_USER_REQUEST);
-  Promise
+  return Promise
     .all([
         client.api('api/v1/me')
       , client.api('subreddits/mine/subscriber')
@@ -50,7 +50,7 @@ export const setMenuVisible = ({dispatch}, visible) => {
  * Reload message list
  */
 export const fetchUserMessages = ({dispatch}) => {
-  client
+  return client
     .api('/message/unread')
     .then((d) => dispatch(types.FETCH_USER_MESSAGES, d.data.children.length));
 };

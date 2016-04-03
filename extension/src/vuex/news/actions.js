@@ -46,7 +46,7 @@ export const setLinkClicked = ({dispatch}, id) => {
   dispatch(types.SET_LINK_CLICKED, id);
 
   // Write to cache
-  localforage.getItem('cachedClicked').then((data) => {
+  return localforage.getItem('cachedClicked').then((data) => {
     data[id] = Date.now();
     localforage.setItem('cachedClicked', data);
   });
@@ -56,9 +56,9 @@ export const setLinkClicked = ({dispatch}, id) => {
  * Fetch list of news
  * @param groupName Name of names group
  * @param name      List of names
- * @param listing   Listing
+ * @param sort      Listing
  */
-export const fetchNews = ({dispatch}, groupName, name, listing) => {
+export const fetchNews = ({dispatch}, groupName, name, sort) => {
   let time = Date.now();
 
   dispatch(types.FETCH_NEWS_REQUEST);
@@ -68,8 +68,8 @@ export const fetchNews = ({dispatch}, groupName, name, listing) => {
     .then((cache) => {
       if(!cache
           || cache.type !== (groupName ? 'multi' : 'subreddit')
-          || cache.subreddit !== (groupName || name)
-          || cache.listing !== listing
+          || cache.name !== (groupName || name)
+          || cache.sort !== sort
           || cache.exp <= Date.now())
         cache = {};
       return cache;
@@ -85,10 +85,10 @@ export const fetchNews = ({dispatch}, groupName, name, listing) => {
       let listings = ['hot', 'new', 'controversial', 'top'];
       if(name === 'general') {
         listings = [...listings, 'rising', 'gilded'];
-        promise = promise || client.front(listing);
+        promise = promise || client.front(sort);
 
       } else if(!promise)
-        promise = client.api(`r/${groupName ? name.join('+') : name}/${listing}`);
+        promise = client.api(`r/${groupName ? name.join('+') : name}/${sort}`);
 
       // Return promise
       return promise.then((data) => [data, listings]);
@@ -105,10 +105,13 @@ export const fetchNews = ({dispatch}, groupName, name, listing) => {
         localforage.setItem('cachedScroll');
         localforage.setItem('cachedListing', {
             exp: time + 300000
-          , subreddit: groupName || name
+          
           , type: groupName ? 'multi': 'subreddit'
+          , name: groupName || name
+          , sort
 
-          , listing
+          // only for multis
+          , subreddits: groupName && name
           , data
         });
       }
