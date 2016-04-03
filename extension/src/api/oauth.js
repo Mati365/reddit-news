@@ -145,9 +145,7 @@ class OAuth {
    */
   _authorize(refresh=false) {
     if(this._oauthRequest)
-      return Promise.resolve();
-    else
-      this._oauthRequest = true;
+      return this._oauthRequest;
 
     // Authorize promise
     let requestPromise = ([code, refreshToken]) => {
@@ -171,7 +169,7 @@ class OAuth {
     };
 
     // Fetch local cache
-    return this
+    this._oauthRequest = this
       ._storage(['code', 'refreshToken'])
       .then(requestPromise)
 
@@ -182,20 +180,23 @@ class OAuth {
           throw data.error;
 
         // Cache values
-        this
+        return this
           ._storage({
               accessToken: data['access_token']
-            , expires: Date.now() + 20 * 60 * 1000
+            , expires: Date.now() + 30 * 60 * 1000
             , refreshToken: refresh ? refreshToken : data['refresh_token']
           })
-          ._oauthRequest = false;
-
-        // Return access token
-        return data['access_token'];
+          .then(() => {
+            this._oauthRequest = null;
+            return data['access_token'];
+          });
       })
+      // Catch errors
       .catch((error) => {
         error === 'invalid_grant' && this.showPopup();
       });
+
+    return this._oauthRequest;
   }
 
   /**

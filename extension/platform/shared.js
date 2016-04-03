@@ -8,11 +8,10 @@
 function getNotificationsCount(token, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', 'https://oauth.reddit.com/message/unread', true);
-  xhr.setRequestHeader('Authorization', 'bearer ' + token);
+  xhr.setRequestHeader('Authorization', 'bearer ' + btoa(token));
   xhr.onload = function () {
-      // do something to response
-      var r = JSON.parse(this.responseText);
-      callback(r.data.children.length);
+    var r = JSON.parse(this.responseText);
+    r.data && callback(r.data.children.length);
   };
   xhr.send();
 }
