@@ -2,8 +2,8 @@
   "addons": {
     "redditnews@mati365.com": {
       "updates": [
-        { "version": "0.1.7"
-        , "update_link": "https://github.com/Mati365/reddit-news/releases/download/v.0.1.7/reddit-news.xpi"
+        { "version": "0.1.8"
+        , "update_link": "https://github.com/Mati365/reddit-news/releases/download/v.0.1.8/reddit-news.xpi"
         }
       ]
     }

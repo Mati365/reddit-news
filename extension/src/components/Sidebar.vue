@@ -1,9 +1,23 @@
 <template lang="jade">
-  nav.text-bold(v-show='!loading') Sub-reddits:
-  nav.text-bold(v-if='loading') Loading...
+  nav.text-bold Choose source
+
+  .text-bold(v-if='loading') Loading...
   ul.sidebar
-    li(v-for='subreddit in subs' v-link-active)
-      a.no-decoration(v-link="{path: '/news/' + subreddit, activeClass: 'text-bold'}") {{ subreddit }}
+    li(v-show='!loading')
+      .text-bold Multis:
+      ul
+        li(v-for='multi in multis' v-link-active)
+          a.no-decoration(
+            v-link="{path: '/news/multi/' + multi.name, activeClass: 'text-bold'}"
+          ) {{ multi.name }}
+
+    li(v-show='!loading')
+      .text-bold Sub-reddits:
+      ul
+        li(v-for='subreddit in subreddits' v-link-active)
+          a.no-decoration(
+            v-link="{path: '/news/subreddit/' + subreddit, activeClass: 'text-bold'}"
+          ) {{ subreddit }}
 
   footer.container
     a.fa.fa-lg.fa-fw.fa-plus(v-tab-link='https://www.reddit.com/subreddits/')
@@ -23,8 +37,9 @@
       name: 'Sidebar'
     , vuex: {
       getters: {
-          subs: ({user}) => ['general', ...user.subs]
-        , loading: ({user}) => !user.subs.length && !user.error
+          subreddits: ({user}) => ['general', ...user.subs.subreddits]
+        , multis: ({user}) => user.subs.multis
+        , loading: ({user}) => !user.subs.subreddits.length && !user.error
       }
       , actions: {
         fetchUserInfo
@@ -33,8 +48,11 @@
     , methods: {
       // Logout user
       logout() {
+        // Clear cache
         client.logout();
         localforage.clear();
+
+        // Close browser
         window.close();
       }
     }
@@ -47,23 +65,30 @@
 <style lang="sass" rel="stylesheet/scss">
   @import 'sass/const.scss';
 
-  ul.sidebar {
+  #hamburger-menu > div {
+    padding: $padding;
+  }
+
+  ul {
     padding: $padding;
     padding-top: 0;
+  }
+  ul.sidebar {
     margin-top: 0;
     max-height: 87%;
     overflow-y: auto;
+
+    > li:first-of-type a::before {
+      content: '+';
+    }
+    > li:not(:first-of-type) a::before {
+      content: '#';
+    }
 
     li {
       overflow: hidden;
       text-overflow: ellipsis;
       margin: 5px 0;
-      &:first-child {
-        margin-bottom: 15px;
-      }
-      &:not(:first-child) a::before {
-        content: '#';
-      }
     }
   }
 

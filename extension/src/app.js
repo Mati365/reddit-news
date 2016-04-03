@@ -23,22 +23,28 @@ import './directives';
   let router = new VueRouter;
   router
     .map({
-        '/news/:subreddit/:sort': {component: NewsView}
+        '/news/:type/:name/:sort': {
+            name: 'news'
+          , component: NewsView
+        }
       , '/info': {component: InfoView}
     })
     .alias({
-      '/news/:subreddit': '/news/:subreddit/hot'
+      '/news/:type/:name': '/news/:type/:name/hot'
     });
 
   // Load cached route
   localforage
     .getItem('cachedListing')
-    .then((data) => {
-      if(!data)
-        data = {subreddit: 'general', listing: 'hot'};
-
+    .then((params) => {
+      if(!params)
+        params = {
+            type: 'subreddit'
+          , subreddit: 'general'
+          , listing: 'hot'
+        };
       // Go to route
-      router.go(`/news/${data.subreddit}/${data.listing}`);
+      router.go(`/news/${params.type}/${params.subreddit}/${params.listing}`);
     });
 
   router.start(App, '#vue-mount');

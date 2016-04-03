@@ -1,11 +1,13 @@
+@import 'const.scss';
+
 * {
   box-sizing: border-box;
 }
 
 .container {
-  padding: 6px;
+  padding: $padding;
   &.tiny {
-    padding: 3px;
+    padding: $padding;
   }
   width: 100%;
 }
@@ -69,9 +71,7 @@ ul.nav {
   color: gray;
 }
 
-nav {
-  + div, + iframe {
-    overflow-y: auto;
-    height: calc(100vh - 60px);
-  }
+nav + div.full-size {
+  overflow-y: auto;
+  height: calc(100vh - 56px);
 }

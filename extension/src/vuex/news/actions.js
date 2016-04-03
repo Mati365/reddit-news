@@ -54,10 +54,11 @@ export const setLinkClicked = ({dispatch}, id) => {
 
 /**
  * Fetch list of news
- * @param subreddit Subreddit name
+ * @param groupName Name of names group
+ * @param name      List of names
  * @param listing   Listing
  */
-export const fetchNews = ({dispatch}, subreddit, listing) => {
+export const fetchNews = ({dispatch}, groupName, name, listing) => {
   let time = Date.now();
 
   dispatch(types.FETCH_NEWS_REQUEST);
@@ -66,7 +67,8 @@ export const fetchNews = ({dispatch}, subreddit, listing) => {
     // Validate cache
     .then((cache) => {
       if(!cache
-          || cache.subreddit !== subreddit
+          || cache.type !== (groupName ? 'multi' : 'subreddit')
+          || cache.subreddit !== (groupName || name)
           || cache.listing !== listing
           || cache.exp <= Date.now())
         cache = {};
@@ -81,12 +83,12 @@ export const fetchNews = ({dispatch}, subreddit, listing) => {
 
       // Detect menu
       let listings = ['hot', 'new', 'controversial', 'top'];
-      if(subreddit === 'general') {
+      if(name === 'general') {
         listings = [...listings, 'rising', 'gilded'];
         promise = promise || client.front(listing);
 
       } else if(!promise)
-        promise = client.api(`/r/${subreddit}/${listing}`);
+        promise = client.api(`r/${groupName ? name.join('+') : name}/${listing}`);
 
       // Return promise
       return promise.then((data) => [data, listings]);
@@ -103,9 +105,11 @@ export const fetchNews = ({dispatch}, subreddit, listing) => {
         localforage.setItem('cachedScroll');
         localforage.setItem('cachedListing', {
             exp: time + 300000
-          , data
+          , subreddit: groupName || name
+          , type: groupName ? 'multi': 'subreddit'
+
           , listing
-          , subreddit
+          , data
         });
       }
 

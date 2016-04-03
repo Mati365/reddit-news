@@ -2,7 +2,10 @@ import _ from 'lodash';
 import types from '../mutations';
 
 const state = {
-    subs: []
+    subs: {
+        subreddits: []
+      , multis: []
+    }
   , nick: ''
   , messages: 0
   , error: false
@@ -14,7 +17,7 @@ const state = {
 const mutations = {
   [types.FETCH_USER_REQUEST](state) {
     _.assign(state, {
-        subs: []
+        subs: {subreddits:[], multis: []}
       , nick: ''
       , messages: 0
       , error: false

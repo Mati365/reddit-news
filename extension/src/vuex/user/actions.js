@@ -12,13 +12,25 @@ export const fetchUserInfo = ({dispatch}) => {
     .all([
         client.api('api/v1/me')
       , client.api('subreddits/mine/subscriber')
+      , client.api('api/multi/mine')
     ])
 
     // On fetch done
-    .then(([user, list]) => {
+    .then(([user, subreddits, multis]) => {
+      multis = _.map(multis, ({data}) => {
+        return {
+            name: data['display_name']
+          , color: data['key_color']
+          , icon: data['icon_url']
+          , subreddits: _.map(data['subreddits'], (child) => child['name'])
+        };
+      });
       dispatch(types.FETCH_USER_SUCCESS, {
           nick: user.name
-        , subs: _.map(list.data.children, (child) => child.data.display_name)
+        , subs: {
+            subreddits: _.map(subreddits.data.children, (child) => child.data['display_name'])
+          , multis
+        }
       });
     })
 

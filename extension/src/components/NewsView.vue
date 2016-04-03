@@ -3,25 +3,25 @@
   nav
     .container.tiny.text-center
       span
-        .subtitle Reddit
-        .text-bold.title /r/{{ subreddit }}
+        span.subtitle {{ title }} &nbsp;
+        span.text-bold.title /r/{{ subreddit }}
       span.messages
         a.no-decoration(v-tab-link='https://www.reddit.com/message/unread/')
           i.fa.fa-envelope-o &nbsp;
           | {{ messages }}
 
     ul.nav.listings
-      li(v-for='type in listings' v-link-active)
+      li(v-for='sort in listings' v-link-active)
         a.no-decoration(
-          v-link="{path:'/news/' + $route.params.subreddit + '/' + type, params: $route.params, activeClass: 'active'}"
-        ) {{ type }}
+          v-link="{name: 'news', params: {type: type, name: subreddit, sort: sort}, activeClass: 'active'}"
+        ) {{ sort }}
       li
         a.no-decoration(href='javascript:;' v-on:click='shareURL')
           i.fa.fa-share-alt &nbsp;
           | Share url
 
   // List
-  .row(v-el:list)
+  .full-size(v-el:list)
     .row(v-if='loading') Loading...
     .row.link(v-for='link in news' v-bind:class='{visited: link.clicked}')
       .score
@@ -66,6 +66,7 @@
             news: ({news}) => news.list
           , listings: ({news}) => news.listings
           , messages: ({user}) => user.messages
+          , multis: ({user}) => user.subs.multis
           , loading: ({news}) => !news.error && !news.list.length
         }
         , actions: {
@@ -78,16 +79,22 @@
 
     // Computed fields
     , computed: {
-      subreddit() { return this.$route.params.subreddit; }
+        subreddit() { return this.$route.params.name; }
+      , type() { return this.$route.params.type; }
+      , title() { return _.upperFirst(this.type); }
     }
 
     // On route change
     , route: {
       data ({ to }) {
         // Load news
+        let {name, sort} = to.params
+          , multi = to.params.type === 'multi';
+
         this.fetchNews(
-              to.params.subreddit
-            , to.params.sort
+              multi && name
+            , multi ? this.multis.length && _.find(this.multis, {name}).subreddits : name
+            , sort
         );
         this.setMenuVisible(false);
       }
@@ -179,6 +186,12 @@
     padding-left: 0;
     padding-right: 0;
 
+    &:first-child {
+      margin-top: 4px;
+    }
+    &:nth-child(even) {
+      background: rgba(128, 128, 128, 0.03);
+    }
     &:not(:last-child) {
       border-bottom: 1px dotted $separator-color;
     }
