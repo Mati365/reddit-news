@@ -78,6 +78,11 @@
         }
     }
 
+    // Fetch messages
+    , created() {
+      this.fetchUserMessages();
+    }
+
     // Computed fields
     , computed: {
         subreddit() { return this.$route.params.name; }
