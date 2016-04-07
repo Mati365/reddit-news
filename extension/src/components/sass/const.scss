@@ -1,3 +1,8 @@
 $menu-width: percentage(.4);
 $separator-color: #efefef;
 $padding: 6px;
+
+$score_width: 45px;
+$thumbnail_width: 70px;
+$description_width: calc(100% - #{$score_width + $thumbnail_width});
+$description_full_width: calc(100% - #{$score_width});

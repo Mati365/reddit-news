@@ -28,6 +28,13 @@
         div {{ link.score }}
         div.fa.fa-star-o.fa-fw
 
+      img.thumbnail(
+        v-if='link.thumbnail.length'
+        v-bind:src='link.thumbnail'
+        v-placeholder-if-broken
+        v-expand-click
+      )
+
       .description(v-bind:class='{shared: link.thumbnail.length}')
         a.no-decoration(
           href='javascript:;'
@@ -42,14 +49,6 @@
               i.fa.fa-link &nbsp;
               | Link
           span submitted {{ link.time }} by {{ link.author }}
-
-
-      img.thumbnail(
-        v-if='link.thumbnail.length'
-        v-bind:src='link.thumbnail'
-        v-placeholder-if-broken
-        v-expand-click
-      )
 </template>
 
 <script type="text/ecmascript-6">
@@ -202,9 +201,6 @@
     padding-left: 0;
     padding-right: 0;
 
-    &:first-child {
-      margin-top: 4px;
-    }
     &:nth-child(even) {
       background: rgba(128, 128, 128, 0.03);
     }
@@ -216,16 +212,18 @@
       -webkit-filter: grayscale(100%);
     }
     .score {
-      width: 15%;
+      width: $score_width;
       text-align: center;
       font-weight: bold;
     }
     .description {
-      width: 85%;
       word-wrap: break-word;
-      &.shared {
-        width: 65%;
-      }
+      padding: 0 6px;
+
+      width: $description_width;
+    }
+    .score + .description {
+      width: $description_full_width;
     }
     .subtitle {
       color: gray;
@@ -235,9 +233,8 @@
       }
     }
     img.thumbnail {
-      max-width: 20%;
+      width: $thumbnail_width;
       max-height: 64px;
-      padding-left: 5px;
       &:hover {
         cursor: pointer;
       }
