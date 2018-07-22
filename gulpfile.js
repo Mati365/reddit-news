@@ -5,8 +5,6 @@ var gulp = require('gulp')
   // Node libs
   , del = require('del')
   , argv = require('yargs').argv
-  , path = require('path')
-
   // Transforms
   , vueify = require('vueify')
   , browserify = require('browserify')
@@ -54,7 +52,7 @@ var bundlerOpts = {
     , 'extension/src/app.js'
   ]
   , extensions: ['.js']
-  , debug: true
+  , debug: !production
   , transform: [
       vueify
     , [babelify, {'presets': ['es2015']}]
