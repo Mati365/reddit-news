@@ -7,7 +7,7 @@ Simple browser extension that shows recent news from reddit written in ES6 and V
 
 ## Install
 
-**Chrome Web Store:**
+**Chrome Web Store:**<br>
 https://chrome.google.com/webstore/detail/reddit-news/bndgflnpjgonnfpfdgiajicojiganjnc
 
 **Chrome:**
